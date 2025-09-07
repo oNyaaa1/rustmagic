@@ -86,7 +86,7 @@ local function RightPanelInfo(pnl, ITEM)
     Buttonz:SetSize(80, 80)
     dpanel = vgui.Create("DPanel", pnl)
     dpanel:Dock(BOTTOM)
-    dpanel:DockPadding(0,1,0,0)
+    dpanel:DockPadding(0, 1, 0, 0)
     dpanel:SetSize(Width * 0.10, Height * 0.22)
     dpanel.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(94, 94, 94, 150)) end
     local AppList = vgui.Create("DListView", dpanel)
@@ -97,8 +97,11 @@ local function RightPanelInfo(pnl, ITEM)
     AppList:AddColumn("Total")
     AppList:AddColumn("Have")
     AppList:AddColumn("Create Time")
-    local time = string.FormattedTime(ITEM.Craft().Time, "%02i:%02i")
-    AppList:AddLine(tostring(ITEM.Craft().AMOUNT), tostring(ITEM.Craft().ITEM), "2", "321", tostring(time) .. " Seconds")
+    for k, v in pairs(ITEM.Craft()) do
+        local time = string.FormattedTime(v.Time, "%02i:%02i")
+        AppList:AddLine(tostring(v.AMOUNT), tostring(v.ITEM), "2", "321", tostring(time) .. " Seconds")
+    end
+
     AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
     local Buttonzz = vgui.Create("DButton", dpanel)
     Buttonzz:Dock(BOTTOM)
