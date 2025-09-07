@@ -168,7 +168,6 @@ local CraftingInventory = function()
         DButtons:SetTall(50)
         DButtons:SetText("")
         DButtons.DoClick = function(me)
-
             grid2:Clear()
             for _, vk in pairs(ITEMS) do
                 if vk.Category == v[1] and not IsValid(btn[_]) then
@@ -182,12 +181,13 @@ local CraftingInventory = function()
                 end
             end
         end
+
         local xd = COUNT[v[1]]
         DButtons.Paint = function(s, w, h)
             draw.RoundedBox(0, 0, 0, w, h, Color(94, 94, 94, 160))
             zSetHealth(tbl2[k], 0, 10, Color(0, 0, 0, 0))
             draw.DrawText(v[1], "gRustFont", w * 0.2, h * 0.2, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
-            draw.DrawText(xd != nil and xd or "0", "gRustFont", w * 0.9, h * 0.2, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
+            draw.DrawText(xd ~= nil and xd or "0", "gRustFont", w * 0.9, h * 0.2, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
         end
     end
 
