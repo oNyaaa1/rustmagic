@@ -10,15 +10,39 @@ hook.Add("InitPostEntity", "WipeStart", function()
     end
 end)
 
-function SaveSystem(ply, slot, displayName, oldSlot, NewSlot)
+function LoadData(ply)
+    local sid = ply:SteamID64()
+    return util.JSONToTable(file.Read("rust_slot/" .. sid .. ".txt", "DATA"))
+end
+
+function FindFreeSlot(ply, slot, setslot)
+    if setslot then return setslot end
+    local slots = LoadData(ply)
+    local freeSlot = 7
+    local slotsFilled = {}
+    for k, v in pairs(slots) do
+        table.insert(slotsFilled, k)
+    end
+
+    for i = 1, 36 do
+        if not slotsFilled[i] == i then freeSlot = i end
+    end
+    return freeSlot
+end
+
+function SaveSystem(ply, slot, item_Tbl, oldSlot, NewSlot, amount)
+    print(item_Tbl.model)
+    if item_Tbl.model == nil then return end
     oldSlot = oldSlot or -1
     NewSlot = NewSlot or -1
     if not file.IsDir("rust_slot", "DATA") then file.CreateDir("rust_slot") end
-    ply.data = {}
-    ply.data[slot] = {
+    ply.data = LoadData(ply)
+    local slotz = FindFreeSlot(ply, slot)
+    ply.data[slotz] = {
         Slot = slot,
-        model = "materials/items/tools/rock.png",
-        Name = displayName,
+        model = item_Tbl.Materials,
+        Name = item_Tbl.Name,
+        Amount = amount,
     }
 
     local sid = ply:SteamID64()
@@ -36,34 +60,34 @@ function SaveSystem(ply, slot, displayName, oldSlot, NewSlot)
     end)
 end
 
-function LoadData(ply)
-    local sid = ply:SteamID64()
-    return util.JSONToTable(file.Read("rust_slot/" .. sid .. ".txt", "DATA"))
+local meta = FindMetaTable("Player")
+function meta:GiveItem(item, amount, setslot)
+    if not IsValid(self) then return end
+    local itemz = ITEMS:GetItem(item)
+    local slotz = FindFreeSlot(self, slot, setslot)
+    print(itemz, item, slotz)
+    SaveSystem(self, slotz, itemz, 0, 0, amount)
 end
 
 local function DragNDrop(len, ply)
     local oldslot = net.ReadFloat()
     local newslot = net.ReadFloat()
     local displayName = net.ReadString()
+    local itemz = ITEMS:GetItem(displayName)
     ply.data[oldslot] = nil
     ply.data[newslot] = {
         Slot = slot,
-        model = "materials/items/tools/rock.png",
-        Name = displayName,
+        model = itemz.model,
+        Name = itemz.Name,
     }
 
-    SaveSystem(ply, newslot, displayName, oldslot, newslot)
+    SaveSystem(ply, newslot, itemz, oldslot, newslot, 1)
 end
 
 net.Receive("DragNDropRust", DragNDrop)
-local Inventory = FindMetaTable("Player")
 -- Player metatable functions
-function Inventory:AddItem(wep, name, slot, img)
-    slot = slot or -1
-    if not IsValid(self) then return end
-    if not self:HasWeapon(wep) and wep ~= "" then self:Give(wep) end
-    if slot == -1 then return end
-    SaveSystem(self, slot, wep, slot, slot)
+function meta:AddItem(wep, setslot)
+    self:GiveItem(wep, 1, setslot)
 end
 
 hook.Add("PlayerInitialSpawn", "SpawnMeRust", function(ply)
@@ -83,8 +107,8 @@ end)
 
 hook.Add("PlayerSpawn", "SpawnMeRust", function(ply)
     if IsValid(ply) then
-        ply:AddItem("tfa_rustalpha_rocktool", "Rock", 1, "materials/items/tools/rock.png")
-        ply:AddItem("rust_hands", "Hands", -1, "")
+        ply:AddItem("rust_rock", 1)
+        ply:AddItem("rust_hands", 0)
         net.Start("gRust_COD")
         net.Send(ply)
         timer.Simple(0.1, function()

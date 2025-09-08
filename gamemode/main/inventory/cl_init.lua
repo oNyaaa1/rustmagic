@@ -273,7 +273,7 @@ function GM:ScoreboardShow()
 
         -- Populate inventory items
         for k, v in pairs(slotData) do
-            if IsValid(pnl[v.Slot]) and istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 36 then
+            if IsValid(pnl[v.Slot]) and istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 36 and v.model ~= nil then
                 btn[k] = vgui.Create("DImageButton")
                 btn[k]:SetImage(v.model)
                 btn[k]:Dock(FILL)

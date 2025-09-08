@@ -12,6 +12,7 @@ Tbl[8] = {"Weapons", "icons/weapon.png"}
 Tbl[9] = {"Ammo", "icons/ammo.png"}
 Tbl[11] = {"Fun", "icons/servers.png"}
 Tbl[12] = {"Other", "icons/electric.png"}
+Tbl[13] = {"Extra", "icons/electric.png"}
 local tbl2 = {}
 for k, v in pairs(Tbl) do
     tbl2[k] = Material(v[2], "noclamp smooth")
@@ -89,7 +90,7 @@ local function RightPanelInfo(pnl, ITEM)
     DLabel:DockMargin(0, 1, 0, Height / 2 + 200)
     DLabel:SetWrap(true)
     local Buttonz = vgui.Create("DImageButton", dpanel2)
-    Buttonz:SetImage(ITEM.Materials)
+    Buttonz:SetImage(ITEM.model)
     Buttonz:SetPos(10, 20)
     Buttonz:SetSize(80, 80)
     dpanel = vgui.Create("DPanel", pnl)
@@ -105,9 +106,13 @@ local function RightPanelInfo(pnl, ITEM)
     AppList:AddColumn("Total")
     AppList:AddColumn("Have")
     AppList:AddColumn("Create Time")
+    AppList:AddColumn("Can Craft")
     for k, v in pairs(ITEM.Craft()) do
-        local time = string.FormattedTime(v.Time, "%02i:%02i")
-        AppList:AddLine(tostring(v.AMOUNT), tostring(v.ITEM), "2", "321", tostring(time) .. " Seconds")
+        if istable(v) then
+            print(v.CanCraft)
+            local time = string.FormattedTime(v.Time, "%02i:%02i")
+            AppList:AddLine(tostring(v.AMOUNT), tostring(v.ITEM), "2", "321", tostring(time) .. " Seconds", tostring(v.CanCraft))
+        end
     end
 
     AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
@@ -170,9 +175,10 @@ local CraftingInventory = function()
         DButtons.DoClick = function(me)
             grid2:Clear()
             for _, vk in pairs(ITEMS) do
-                if vk.Category == v[1] and not IsValid(btn[_]) then
+                if type(vk) == "function" then continue end
+                if type(vk) == "table" and vk.Category == v[1] and not IsValid(btn[_]) then
                     btn[_] = vgui.Create("DImageButton")
-                    btn[_]:SetImage(vk.Materials)
+                    btn[_]:SetImage(vk.model)
                     btn[_]:Dock(FILL)
                     btn[_]:SetTall(80)
                     btn[_]:Droppable("myDNDname")

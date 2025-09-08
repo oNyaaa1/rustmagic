@@ -56,4 +56,5 @@ IncludeDir = function(dir)
     end
 end
 
+IncludeDir("rustmagic/gamemode/extra")
 IncludeDir("rustmagic/gamemode/main")
