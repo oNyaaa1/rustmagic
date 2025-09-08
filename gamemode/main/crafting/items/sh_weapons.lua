@@ -13,7 +13,7 @@ RegisterItem("rust_rock", {
             },
         }
     end,
-},"Tools")  
+}, "Tools")
 
 RegisterItem("rust_stonehatchet", {
     Name = "Stone Hatchet",
@@ -35,4 +35,4 @@ RegisterItem("rust_stonehatchet", {
             }
         }
     end,
-},"Tools")
+}, "Tools")

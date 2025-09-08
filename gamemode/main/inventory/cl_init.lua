@@ -34,6 +34,9 @@ net.Receive("SendSlots", function()
         btn[ns]:Droppable("myDNDname")
         btn[ns]:SetParent(pnl[ns])
         btn[ns].Active = true
+        net.Start("gRustWriteSlot")
+        net.WriteString(btn[ns].TypeWep)
+        net.SendToServer()
     end
 
     if data and IsValid(pnln[ns]) then
@@ -46,6 +49,9 @@ net.Receive("SendSlots", function()
         btn[ns]:Droppable("myDNDname")
         btn[ns]:SetParent(pnln[ns])
         btn[ns].Active = true
+        net.Start("gRustWriteSlot")
+        net.WriteString("rust_hands")
+        net.SendToServer()
         -- Update display with stack info
     end
 end)

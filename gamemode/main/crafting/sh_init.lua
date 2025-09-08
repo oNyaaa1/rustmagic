@@ -17,10 +17,8 @@ function RegisterItem(itemName, items, category)
     ITEMS[itemName] = items
     local countz = 1
     for k, v in pairs(Tbl) do
-        if v[1] == category then
-            countz = countz + 1
-        end
+        if v[1] == category then countz = countz + 1 end
     end
 
-    if COUNT[category] ~= nil then COUNT[category] = countz end
+    COUNT[category] = countz
 end
