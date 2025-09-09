@@ -44,3 +44,28 @@ ITEMS:RegisterItem("Stone Hatchet", {
         }
     end,
 }, "Tools")
+ITEMS:RegisterItem("Stone Pickaxe", {
+    Name = "Stone Pickaxe",
+    Info = "The Stone Pickaxe - Basic for collecting whOres",
+    Category = "Tools",
+    model = "materials/items/tools/stone_pickaxe.png",
+    Weapon = "rust_stonepickaxe",
+    Count = 1,
+    Craft = function()
+        return {
+            {
+                CanCraft = true,
+                {
+                    ITEM = "wood",
+                    AMOUNT = 200,
+                    Time = 5,
+                },
+                {
+                    ITEM = "Stone",
+                    AMOUNT = 100,
+                    Time = 5,
+                },
+            },
+        }
+    end,
+}, "Tools")

@@ -71,6 +71,7 @@ surface.CreateFont("CraftingRustFont", {
 local btn = {}
 local right = right or nil
 local dpanel = dpanel or nil
+local dpnl = nil
 local function RightPanelInfo(pnl, ITEM)
     if IsValid(dpanel) then dpanel:Remove() end
     dpanel2 = vgui.Create("DPanel", pnl)
@@ -125,6 +126,7 @@ local function RightPanelInfo(pnl, ITEM)
         draw.RoundedBox(0, 0, 0, w, h, Color(66, 66, 66))
         draw.DrawText("CRAFT", "CraftingRustFont", 110, 25, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
     end
+    return dpanel2
 end
 
 local CraftingInventory = function()
@@ -172,6 +174,7 @@ local CraftingInventory = function()
         DButtons:Dock(TOP)
         DButtons:SetTall(50)
         DButtons:SetText("")
+        
         DButtons.DoClick = function(me)
             grid2:Clear()
             for _, vk in pairs(ITEMS) do
@@ -182,7 +185,11 @@ local CraftingInventory = function()
                     btn[_]:Dock(FILL)
                     btn[_]:SetTall(80)
                     btn[_]:Droppable("myDNDname")
-                    btn[_].DoClick = function() RightPanelInfo(right, vk) end
+                    btn[_].DoClick = function()
+                        if IsValid(dpnl) then print(dpnl) dpnl:Remove() end
+                        dpnl = RightPanelInfo(right, vk)
+                    end
+
                     grid2:AddCell(btn[_])
                 end
             end
