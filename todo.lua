@@ -1,7 +1,5 @@
 /*
-Added Hemp
-Added Ore
-Added Ore Pickup
-Added Spawning
+Fixed inventory
+Fixed death not clearing
 
 */

@@ -1,4 +1,4 @@
-ITEMS:RegisterItem("cloth", {
+ITEMS:RegisterItem("Cloth", {
     Name = "Cloth",
     Info = "For bandages etc",
     Category = "Extra",

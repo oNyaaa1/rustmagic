@@ -1,4 +1,4 @@
-ITEMS:RegisterItem("rust_rock", {
+ITEMS:RegisterItem("Rock", {
     Name = "Rock",
     Info = "Rock, Basic gathering tool.",
     Category = "Tools",
@@ -19,7 +19,7 @@ ITEMS:RegisterItem("rust_rock", {
     end,
 }, "Tools")
 
-ITEMS:RegisterItem("rust_stonehatchet", {
+ITEMS:RegisterItem("Stone Hatchet", {
     Name = "Stone Hatchet",
     Info = "The Stone Hatchet - Basic for collecting Sheep cloths and tree gathering",
     Category = "Tools",

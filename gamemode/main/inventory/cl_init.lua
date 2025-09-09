@@ -14,45 +14,44 @@ net.Receive("SendSlots", function()
     slotData = net.ReadTable()
     local oldslot = net.ReadFloat()
     local ns = net.ReadFloat()
-    local data = {}
-    for k, v in pairs(slotData) do
-        if ns == v.Slot then data = v end
-    end
-
     if oldslot ~= -1 then
         if IsValid(btn[oldslot]) then btn[oldslot]:Remove() end
         slotData[oldslot] = nil
     end
 
-    if data and IsValid(pnl[ns]) then
-        btn[ns] = vgui.Create("DImageButton")
-        btn[ns]:SetImage(data.model)
-        btn[ns]:Dock(FILL)
-        btn[ns].TypeWep = data.Name
-        --btn[k].GetnImage = v.model
-        btn[ns].SlotID = data.Slot
-        btn[ns]:Droppable("myDNDname")
-        btn[ns]:SetParent(pnl[ns])
-        btn[ns].Active = true
-        net.Start("gRustWriteSlot")
-        net.WriteString(btn[ns].TypeWep)
-        net.SendToServer()
-    end
+    for k, v in pairs(slotData) do
+        if v and IsValid(pnl[ns]) then
+            btn[ns] = vgui.Create("DImageButton")
+            btn[ns]:SetImage(v.model)
+            btn[ns]:Dock(FILL)
+            btn[ns].TypeWep = v.Name
+            btn[ns].Class = v.Class
+            --btn[k].GetnImage = v.model
+            btn[ns].SlotID = v.Slot
+            btn[ns]:Droppable("myDNDname")
+            btn[ns]:SetParent(pnl[ns])
+            btn[ns].Active = true
+            net.Start("gRustWriteSlot")
+            net.WriteString(btn[ns].Class)
+            net.SendToServer()
+        end
 
-    if data and IsValid(pnln[ns]) then
-        btn[ns] = vgui.Create("DImageButton")
-        btn[ns]:SetImage(data.model)
-        btn[ns]:Dock(FILL)
-        btn[ns].TypeWep = data.Name
-        --btn[k].GetnImage = v.model
-        btn[ns].SlotID = data.Slot
-        btn[ns]:Droppable("myDNDname")
-        btn[ns]:SetParent(pnln[ns])
-        btn[ns].Active = true
-        net.Start("gRustWriteSlot")
-        net.WriteString("rust_hands")
-        net.SendToServer()
-        -- Update display with stack info
+        if v and IsValid(pnln[ns]) then
+            btn[ns] = vgui.Create("DImageButton")
+            btn[ns]:SetImage(v.model)
+            btn[ns]:Dock(FILL)
+            btn[ns].TypeWep = v.Name
+            btn[ns].Class = v.Class
+            --btn[k].GetnImage = v.model
+            btn[ns].SlotID = v.Slot
+            btn[ns]:Droppable("myDNDname")
+            btn[ns]:SetParent(pnln[ns])
+            btn[ns].Active = true
+            net.Start("gRustWriteSlot")
+            net.WriteString("rust_hands")
+            net.SendToServer()
+            -- Update display with stack info
+        end
     end
 end)
 
@@ -62,6 +61,7 @@ function DoDrop(self, panels, dropped, _, x, y)
         net.WriteFloat(panels[1].SlotID)
         net.WriteFloat(self.SlotID)
         net.WriteString(panels[1].TypeWep)
+        net.WriteString(panels[1].Class)
         net.SendToServer()
         panels[1]:SetParent(self)
         panels[1]:SetPos(x - 25, y - 25)
@@ -135,6 +135,7 @@ local function LeftPanel(data)
                 btn[k]:SetImage(matPath)
                 btn[k]:Dock(FILL)
                 btn[k].TypeWep = v.Name
+                btn[k].Class = v.Class
                 --btn[k].GetnImage = matPath
                 btn[k].SlotID = realSlotID
                 btn[k]:Droppable("myDNDname")
@@ -262,6 +263,7 @@ function GM:ScoreboardShow()
                 btn[k]:SetImage(v.model)
                 btn[k]:Dock(FILL)
                 btn[k].TypeWep = v.Name
+                btn[k].Class = v.Class
                 --btn[k].GetnImage = v.model
                 btn[k].SlotID = v.Slot
                 btn[k]:Droppable("myDNDname")
@@ -278,6 +280,7 @@ function GM:ScoreboardShow()
                 btn[k]:SetImage(v.model)
                 btn[k]:Dock(FILL)
                 btn[k].TypeWep = v.Name
+                btn[k].Class = v.Class
                 --btn[k].GetnImage = v.model
                 btn[k].SlotID = v.Slot
                 btn[k]:Droppable("myDNDname")
@@ -314,7 +317,7 @@ hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
     local found = false
     if IsValid(btn[num]) then
         net.Start("gRustWriteSlot")
-        net.WriteString(btn[num].TypeWep)
+        net.WriteString(btn[num].Class)
         net.SendToServer()
         found = true
     end

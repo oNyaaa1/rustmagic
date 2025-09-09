@@ -2,7 +2,7 @@ print("Inventory Loaded")
 util.AddNetworkString("gRust_COD")
 util.AddNetworkString("SendSlots")
 util.AddNetworkString("DragNDropRust")
-resource.AddSingleFile("materials/tree/treemarker.png")
+resource.AddSingleFile("model/tree/treemarker.png")
 util.AddNetworkString("gRustWriteSlot")
 hook.Add("InitPostEntity", "WipeStart", function()
     if game.GetMap() ~= "rust_highland_v1_3a" then --message pop up
@@ -11,7 +11,12 @@ hook.Add("InitPostEntity", "WipeStart", function()
 end)
 
 function LoadData(ply)
+    if not file.IsDir("rust_slot", "DATA") then file.CreateDir("rust_slot") end
     local sid = ply:SteamID64()
+    if not file.Exists("rust_slot/" .. sid .. ".txt", "DATA") then
+        file.Write("rust_slot/" .. sid .. ".txt", util.TableToJSON({}), true)
+        return util.JSONToTable(file.Read("rust_slot/" .. sid .. ".txt", "DATA"))
+    end
     return util.JSONToTable(file.Read("rust_slot/" .. sid .. ".txt", "DATA"))
 end
 
@@ -25,26 +30,39 @@ function FindFreeSlot(ply, slot, setslot)
     end
 
     for i = 1, 36 do
-        if not slotsFilled[i] == i then freeSlot = i end
+        if slotsFilled[i] ~= i then
+            freeSlot = i
+            break
+        end
     end
+
+    print(freeSlot)
     return freeSlot
 end
 
-function SaveSystem(ply, slot, item_Tbl, oldSlot, NewSlot, amount)
-    print(item_Tbl.model)
-    if item_Tbl.model == nil then return end
+function SaveSystem(ply, slot, item_Tbl, oldSlot, NewSlot, amount, dnd)
     oldSlot = oldSlot or -1
     NewSlot = NewSlot or -1
     if not file.IsDir("rust_slot", "DATA") then file.CreateDir("rust_slot") end
-    ply.data = LoadData(ply)
-    local slotz = FindFreeSlot(ply, slot)
+    local slotz = 0
+    if dnd then
+        ply.data = {}
+        slotz = slot
+    else
+        ply.data = LoadData(ply)
+        slotz = FindFreeSlot(ply, slot)
+    end
+
+    
     ply.data[slotz] = {
-        Slot = slot,
-        model = item_Tbl.Materials,
+        Slot = slotz,
+        model = item_Tbl.model,
         Name = item_Tbl.Name,
         Amount = amount,
+        Class = item_Tbl.Weapon
     }
 
+    ply:Give(item_Tbl.Weapon)
     local sid = ply:SteamID64()
     -- Save to disk
     file.Write("rust_slot/" .. sid .. ".txt", util.TableToJSON(ply.data, true))
@@ -65,23 +83,25 @@ function meta:GiveItem(item, amount, setslot)
     if not IsValid(self) then return end
     local itemz = ITEMS:GetItem(item)
     local slotz = FindFreeSlot(self, slot, setslot)
-    print(itemz, item, slotz)
-    SaveSystem(self, slotz, itemz, 0, 0, amount)
+    if itemz == nil then return end
+    SaveSystem(self, slotz, itemz, 0, 0, amount, false)
 end
 
 local function DragNDrop(len, ply)
     local oldslot = net.ReadFloat()
     local newslot = net.ReadFloat()
     local displayName = net.ReadString()
+    local dss = net.ReadString()
     local itemz = ITEMS:GetItem(displayName)
     ply.data[oldslot] = nil
     ply.data[newslot] = {
         Slot = slot,
         model = itemz.model,
         Name = itemz.Name,
+        Class = itemz.Weapon
     }
 
-    SaveSystem(ply, newslot, itemz, oldslot, newslot, 1)
+    SaveSystem(ply, newslot, itemz, oldslot, newslot, 1, true)
 end
 
 net.Receive("DragNDropRust", DragNDrop)
@@ -92,6 +112,8 @@ end
 
 hook.Add("PlayerInitialSpawn", "SpawnMeRust", function(ply)
     if IsValid(ply) then
+        ply:AddItem("rust_rock", 1)
+        -- ply:AddItem("rust_hands", 0)
         net.Start("gRust_COD")
         net.Send(ply)
         timer.Simple(0.1, function()
@@ -107,18 +129,27 @@ end)
 
 hook.Add("PlayerSpawn", "SpawnMeRust", function(ply)
     if IsValid(ply) then
-        ply:AddItem("rust_rock", 1)
-        ply:AddItem("rust_hands", 0)
+        ply:AddItem("Rock", 1)
+        -- ply:AddItem("rust_hands", 0)
         net.Start("gRust_COD")
         net.Send(ply)
-        timer.Simple(0.1, function()
+        timer.Simple(1, function()
             ply.data = LoadData(ply)
-            net.Start("SendSlots")
+            --[[net.Start("SendSlots")
             net.WriteTable(ply.data)
             net.WriteFloat(1)
             net.WriteFloat(1)
-            net.Send(ply)
+            net.Send(ply)]]
         end)
+    end
+end)
+
+hook.Add("PlayerDeath", "SpawnMeRust", function(ply)
+    if IsValid(ply) then
+        net.Start("gRust_COD")
+        net.Send(ply)
+        local sid = ply:SteamID64()
+        file.Write("rust_slot/" .. sid .. ".txt", util.TableToJSON({}, true))
     end
 end)
 
@@ -138,7 +169,7 @@ net.Receive("gRustWriteSlot", function(len, ply)
         hasWep = true -- Always allow hands
     else
         for _, v in pairs(slots) do
-            if istable(v) and (v.Name == str) then
+            if istable(v) and (v.Class == str) then
                 hasWep = true
                 break
             end
@@ -151,6 +182,7 @@ net.Receive("gRustWriteSlot", function(len, ply)
         if not ply:HasWeapon("rust_hands") then ply:Give("rust_hands") end
         ply:SelectWeapon("rust_hands")
     else
+        print(str)
         if not ply:HasWeapon(str) then ply:Give(str) end
         ply:SelectWeapon(str)
     end
