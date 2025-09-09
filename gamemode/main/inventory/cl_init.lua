@@ -1,7 +1,7 @@
 print("Inventory Loaded")
 local w, h = ScrW(), ScrH()
 hook.Add("OnScreenSizeChanged", "FixEdWidTh", function(_, _, nw, nh) w, h = nw, nh end)
-local frame, frame2, Frame = nil, nil, nil -- Globals for inventory state
+local frame, frame2 = nil, nil -- Globals for inventory state
 local pnl = {} -- hotbar panels
 local pnln = {} -- inventory panels (7..36)
 local pnln2 = {} -- left-panel quick slots (37..42)
@@ -9,13 +9,7 @@ local btn = {} -- item buttons
 local slotData = {} -- slot data received from server
 local LeftWidth = ScrW() * 0.280
 local LeftShift = ScrW() * 0.0055
--- Helper function to update stack display
-local function UpdateStackDisplay(button, itemData)
-    if button and itemData and itemData.Amount then
-        -- This function can be expanded based on your needs
-    end
-end
-
+local Frame = nil
 net.Receive("SendSlots", function()
     slotData = net.ReadTable()
     local oldslot = net.ReadFloat()
@@ -25,62 +19,63 @@ net.Receive("SendSlots", function()
         slotData[oldslot] = nil
     end
 
-    -- Populate inventory items (slots 7-36) - now 30 slots total
     for k, v in pairs(slotData) do
-        if istable(v) and v.Slot and v.Slot >= 7 and v.Slot <= 36 and v.model ~= nil then
-            if IsValid(pnln[v.Slot]) then
-                if IsValid(btn[k]) then btn[k]:Remove() end
-                btn[k] = vgui.Create("DImageButton")
-                btn[k]:SetImage(v.model)
-                btn[k]:Dock(FILL)
-                btn[k].TypeWep = v.Name
-                btn[k].Class = v.Class
-                btn[k].SlotID = v.Slot
-                btn[k]:Droppable("myDNDname")
-                btn[k]:SetParent(pnln[v.Slot])
-                btn[k].Active = true
-                btn[k].Paint = function(s, w, h) draw.DrawText(v.Amount or "1", "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT) end
+        if IsValid(pnln[v.Slot]) and istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 36 then
+            btn[k] = vgui.Create("DImageButton")
+            btn[k]:SetImage(v.model)
+            btn[k]:Dock(FILL)
+            btn[k].TypeWep = v.Name
+            btn[k].Class = v.Class
+            --btn[k].GetnImage = v.model
+            btn[k].SlotID = v.Slot
+            btn[k]:Droppable("myDNDname")
+            btn[k]:SetParent(pnln[v.Slot])
+            btn[k].Active = true
+            btn[k].Paint = function(s, w, h)
+                --test
+                draw.DrawText(v.Amount, "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
             end
+            -- Update display with stack info
         end
+    end
 
-        -- Populate hotbar items (slots 1-6)
-        if istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 6 and v.model ~= nil then
-            if IsValid(pnl[v.Slot]) then
-                if IsValid(btn[k]) then btn[k]:Remove() end
-                btn[k] = vgui.Create("DImageButton")
-                btn[k]:SetImage(v.model)
-                btn[k]:Dock(FILL)
-                btn[k].TypeWep = v.Name
-                btn[k].Class = v.Class
-                btn[k].SlotID = v.Slot
-                btn[k]:Droppable("myDNDname")
-                btn[k]:SetParent(pnl[v.Slot])
-                btn[k].Active = true
-                btn[k].Paint = function(s, w, h) draw.DrawText(v.Amount or "1", "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT) end
+    -- Populate inventory items
+    for k, v in pairs(slotData) do
+        if IsValid(pnl[v.Slot]) and istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 36 and v.model ~= nil then
+            btn[k] = vgui.Create("DImageButton")
+            btn[k]:SetImage(v.model)
+            btn[k]:Dock(FILL)
+            btn[k].TypeWep = v.Name
+            btn[k].Class = v.Class
+            --btn[k].GetnImage = v.model
+            btn[k].SlotID = v.Slot
+            btn[k]:Droppable("myDNDname")
+            btn[k]:SetParent(pnl[v.Slot])
+            btn[k].Active = true
+            btn[k].Paint = function(s, w, h)
+                --test
+                draw.DrawText(v.Amount, "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
             end
+            -- Update display with stack info
         end
     end
 end)
 
 function DoDrop(self, panels, dropped, _, x, y)
-    if dropped and panels[1] then
+    if dropped then
         net.Start("DragNDropRust")
         net.WriteFloat(panels[1].SlotID)
         net.WriteFloat(self.SlotID)
-        net.WriteString(panels[1].TypeWep or "")
-        net.WriteString(panels[1].Class or "")
+        net.WriteString(panels[1].TypeWep)
+        net.WriteString(panels[1].Class)
         net.SendToServer()
         panels[1]:SetParent(self)
-        panels[1]:Dock(FILL)
+        panels[1]:SetPos(x - 25, y - 25)
     end
 end
 
-function DoDropWear(self, panels, dropped, _, x, y)
-    if dropped and panels[1] then
-        -- Add wear slot logic here if needed
-        panels[1]:SetParent(self)
-        panels[1]:Dock(FILL)
-    end
+function PossibleWear(self, panels, dropped, _, x, y)
+    if dropped then end
 end
 
 local function LeftPanel(data)
@@ -92,18 +87,21 @@ local function LeftPanel(data)
     local Panel = Frame:Add("DPanel")
     Panel:Dock(TOP)
     Panel:SetWide(LeftWidth - LeftShift)
-    Panel:SetTall(h - 150) -- Adjusted to leave room for bottom panel
+    Panel:SetTall(h - 50)
     Panel.Paint = function(_, fw, fh) end
     local Panel2 = Frame:Add("DPanel")
     Panel2:Dock(BOTTOM)
     Panel2:SetWide(LeftWidth - LeftShift)
     Panel2:SetTall(100)
     Panel2.Paint = function(_, fw, fh) end
-    local grid = vgui.Create("DIconLayout", Panel2)
+    local grid = vgui.Create("ThreeGrid", Panel2)
     grid:Dock(FILL)
     grid:DockMargin(30, 4, 4, 4)
-    grid:SetSpaceY(2)
-    grid:SetSpaceX(2)
+    grid:SetColumns(7)
+    grid:SetHorizontalMargin(2)
+    grid:SetVerticalMargin(2)
+    grid:InvalidateLayout(true)
+    grid:InvalidateParent(true)
     -- Clear existing left panel buttons
     for i = 37, 43 do
         if btn[i] and IsValid(btn[i]) then
@@ -115,36 +113,51 @@ local function LeftPanel(data)
     -- Create quick slots
     for i = 37, 43 do
         pnln2[i] = vgui.Create("DPanel")
-        pnln2[i]:SetSize(80, 80)
+        pnln2[i]:SetTall(80)
         pnln2[i].SlotID = i
         pnln2[i].RealSlotID = i
         pnln2[i].Paint = function(_, pw, ph)
             surface.SetDrawColor(0, 0, 0, 100)
             surface.DrawRect(0, 0, pw, ph)
             surface.SetDrawColor(94, 94, 94, 150)
-            surface.DrawOutlinedRect(0, 0, pw, ph)
+            surface.DrawRect(0, 0, pw, ph)
         end
 
         pnln2[i]:Receiver("myDNDname", DoDropWear)
-        grid:Add(pnln2[i])
+        grid:AddCell(pnln2[i])
     end
 
-    -- Populate quick slot items
-    for k, v in pairs(data or {}) do
-        if istable(v) and v.Slot and v.Slot >= 37 and v.Slot <= 43 then
-            local parentPanel = pnln2[v.Slot]
-            if IsValid(parentPanel) then
-                if IsValid(btn[k]) then btn[k]:Remove() end
+    -- Populate items
+    for k, v in pairs(data) do
+        if not istable(v) then continue end
+        if not isnumber(v.Slot) then continue end
+        local parentPanel = nil
+        local realSlotID = nil
+        if parentPanel then
+            if not IsValid(btn[k]) then
                 btn[k] = vgui.Create("DImageButton")
-                btn[k]:SetImage(v.model or "")
+                local matPath = v.model
+                btn[k]:SetImage(matPath)
                 btn[k]:Dock(FILL)
                 btn[k].TypeWep = v.Name
                 btn[k].Class = v.Class
-                btn[k].SlotID = v.Slot
+                --btn[k].GetnImage = matPath
+                btn[k].SlotID = realSlotID
                 btn[k]:Droppable("myDNDname")
                 btn[k]:SetParent(parentPanel)
                 btn[k].Active = true
-                btn[k].Paint = function(s, w, h) draw.DrawText(v.Amount or "1", "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT) end
+                btn[k].Paint = function(s, w, h)
+                --test
+                draw.DrawText(v.Amount, "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
+            end
+                -- Update display with stack info
+                UpdateStackDisplay(btn[k], v)
+            else
+                btn[k]:SetParent(parentPanel)
+                btn[k].SlotID = realSlotID
+                local matPath = v.model
+                btn[k]:SetImage(matPath)
+                -- Update display with stack info
                 UpdateStackDisplay(btn[k], v)
             end
         end
@@ -154,15 +167,16 @@ local function LeftPanel(data)
     PlayerModel:Dock(FILL)
     PlayerModel:SetModel(LocalPlayer():GetModel())
     PlayerModel.DropPanel = true
-    function PlayerModel:LayoutEntity(ent)
-        if IsValid(ent) then
-            ent:SetAngles(Angle(0, 55, 0))
-            ent:SetPos(Vector(20, 10, 0))
-            ent:SetBodygroup(3, 1)
-        end
+    PlayerModel.LayoutEntity = function(me, ent)
+        ent:SetAngles(Angle(0, 55, 0))
+        ent:SetPos(Vector(20, 10, 0))
     end
 
-    PlayerModel.Think = function(me) if IsValid(LocalPlayer()) then me:SetModel(LocalPlayer():GetModel()) end end
+    function PlayerModel:LayoutEntity(ent)
+        ent:SetBodygroup(3, 1)
+    end
+
+    PlayerModel.Think = function(me) me:SetModel(LocalPlayer():GetModel()) end
 end
 
 local function COD(data)
@@ -171,11 +185,14 @@ local function COD(data)
     frame2:SetSize(500, 100)
     frame2:SetPos(ScrW() * 0.29 + 93, ScrH() * 0.85)
     frame2.Paint = function(_, w, h) end
-    local grid2 = vgui.Create("DIconLayout", frame2)
+    local grid2 = vgui.Create("ThreeGrid", frame2)
     grid2:Dock(FILL)
     grid2:DockMargin(4, 4, 4, 4)
-    grid2:SetSpaceY(2)
-    grid2:SetSpaceX(2)
+    grid2:SetColumns(6)
+    grid2:SetHorizontalMargin(2)
+    grid2:SetVerticalMargin(2)
+    grid2:InvalidateParent(true)
+    grid2:InvalidateLayout(true)
     -- Clear existing hotbar buttons
     for i = 1, 6 do
         if btn[i] and IsValid(btn[i]) then
@@ -193,134 +210,122 @@ local function COD(data)
             surface.SetDrawColor(0, 0, 0, 100)
             surface.DrawRect(0, 0, pw, ph)
             surface.SetDrawColor(94, 94, 94, 150)
-            surface.DrawOutlinedRect(0, 0, pw, ph)
+            surface.DrawRect(0, 0, pw, ph)
         end
 
         pnl[i]:Receiver("myDNDname", DoDrop)
-        grid2:Add(pnl[i])
-    end
-
-    -- Populate hotbar items
-    if data then
-        for k, v in pairs(data) do
-            if istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 6 then
-                local parentPanel = pnl[v.Slot]
-                if IsValid(parentPanel) then
-                    if IsValid(btn[k]) then btn[k]:Remove() end
-                    btn[k] = vgui.Create("DImageButton")
-                    btn[k]:SetImage(v.model or "")
-                    btn[k]:Dock(FILL)
-                    btn[k].TypeWep = v.Name
-                    btn[k].Class = v.Class
-                    btn[k].SlotID = v.Slot
-                    btn[k]:Droppable("myDNDname")
-                    btn[k]:SetParent(parentPanel)
-                    btn[k].Active = true
-                    btn[k].Paint = function(s, w, h) draw.DrawText(v.Amount or "1", "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT) end
-                end
-            end
-        end
+        grid2:AddCell(pnl[i])
     end
 end
 
-net.Receive("gRust_COD", function() COD(slotData) end)
+net.Receive("gRust_COD", function() COD() end)
 function GM:ScoreboardShow()
     local ply = LocalPlayer()
-    if not IsValid(ply) or not ply:Alive() then return end
+    if not ply:Alive() then return end
     LeftPanel(slotData)
     gui.EnableScreenClicker(true)
-    if IsValid(frame) then frame:Remove() end
-    frame = vgui.Create("DPanel")
-    -- Adjusted size to accommodate 6x5 grid properly
-    frame:SetSize(495, 415) -- Wider for 6 columns, taller for 5 rows
-    frame:SetPos(w * 0.351, h * 0.38)
-    frame.Paint = function(_, fw, fh)
-        surface.SetDrawColor(0, 0, 0, 200)
-        surface.DrawRect(0, 0, fw, fh)
-    end
-
-    -- Using DGrid for precise 6x5 layout control
-    local grid = vgui.Create("DGrid", frame)
-    grid:Dock(FILL)
-    grid:DockMargin(8, 8, 8, 8)
-    grid:SetCols(6) -- 6 columns
-    grid:SetColWide(80) -- Each slot is 80 units wide
-    grid:SetRowHeight(80) -- Each slot is 80 units tall
-    -- Clear existing inventory buttons
-    for i = 7, 36 do
-        if btn[i] and IsValid(btn[i]) then
-            btn[i]:Remove()
-            btn[i] = nil
+    if not IsValid(frame) then
+        frame = vgui.Create("DPanel")
+        frame:SetSize(488, 418)
+        frame:SetPos(w * 0.351, h * 0.38)
+        frame.Paint = function(_, fw, fh)
+            surface.SetDrawColor(0, 0, 0, 200)
+            surface.DrawRect(0, 0, fw, fh)
         end
 
-        if pnln[i] and IsValid(pnln[i]) then pnln[i] = nil end
-    end
-
-    -- Create inventory slots (7-36 = 30 slots for 6x5 grid)
-    for i = 7, 36 do
-        pnln[i] = vgui.Create("DPanel")
-        pnln[i]:SetSize(80, 80)
-        pnln[i].SlotID = i
-        pnln[i].Paint = function(_, pw, ph)
-            surface.SetDrawColor(0, 0, 0, 100)
-            surface.DrawRect(0, 0, pw, ph)
-            surface.SetDrawColor(94, 94, 94, 150)
-            surface.DrawOutlinedRect(0, 0, pw, ph)
-            -- Optional: Draw slot number for debugging
-            -- draw.SimpleText(i, "DermaDefault", pw/2, ph/2, Color(100, 100, 100, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        local grid = vgui.Create("ThreeGrid", frame)
+        grid:Dock(FILL)
+        grid:DockMargin(4, 4, 4, 4)
+        grid:SetColumns(6)
+        grid:SetHorizontalMargin(2)
+        grid:SetVerticalMargin(2)
+        grid:InvalidateParent(true)
+        grid:InvalidateLayout(true)
+        -- Clear existing inventory buttons
+        for i = 7, 36 do
+            if btn[i] and IsValid(btn[i]) then
+                btn[i]:Remove()
+                btn[i] = nil
+            end
         end
 
-        pnln[i]:Receiver("myDNDname", DoDrop)
-        grid:AddItem(pnln[i])
-    end
+        -- Create inventory slots
+        for i = 7, 36 do
+            pnln[i] = vgui.Create("DPanel")
+            pnln[i]:SetTall(80)
+            pnln[i].SlotID = i
+            pnln[i].Paint = function(_, pw, ph)
+                surface.SetDrawColor(0, 0, 0, 100)
+                surface.DrawRect(0, 0, pw, ph)
+                surface.SetDrawColor(94, 94, 94, 150)
+                surface.DrawRect(0, 0, pw, ph)
+            end
 
-    -- Populate inventory items
-    for k, v in pairs(slotData) do
-        if istable(v) and v.Slot and v.Slot >= 7 and v.Slot <= 36 then
-            local parentPanel = pnln[v.Slot]
-            if IsValid(parentPanel) then
-                if IsValid(btn[k]) then btn[k]:Remove() end
+            pnln[i]:Receiver("myDNDname", DoDrop)
+            grid:AddCell(pnln[i])
+        end
+
+        for i = 1, #btn do
+            if IsValid(btn[i]) then btn[i]:Remove() end
+        end
+
+        for k, v in pairs(slotData) do
+            if IsValid(pnln[v.Slot]) and istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 36 then
                 btn[k] = vgui.Create("DImageButton")
-                btn[k]:SetImage(v.model or "")
+                btn[k]:SetImage(v.model)
                 btn[k]:Dock(FILL)
                 btn[k].TypeWep = v.Name
                 btn[k].Class = v.Class
+                --btn[k].GetnImage = v.model
                 btn[k].SlotID = v.Slot
                 btn[k]:Droppable("myDNDname")
-                btn[k]:SetParent(parentPanel)
+                btn[k]:SetParent(pnln[v.Slot])
                 btn[k].Active = true
                 btn[k].Paint = function(s, w, h)
-                    -- Draw item amount in bottom-right corner
-                    local amount = v.Amount or "1"
-                    draw.SimpleText(amount, "DermaDefault", w - 2, h - 2, Color(255, 255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
+                    --test
+                    draw.DrawText(v.Amount, "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
                 end
+            end
+        end
 
-                -- Optional: Add tooltip with item info
-                btn[k].DoClick = function()
-                    -- Could add item use/split functionality here
+        -- Populate inventory items
+        for k, v in pairs(slotData) do
+            if IsValid(pnl[v.Slot]) and istable(v) and v.Slot and v.Slot >= 1 and v.Slot <= 36 and v.model ~= nil then
+                btn[k] = vgui.Create("DImageButton")
+                btn[k]:SetImage(v.model)
+                btn[k]:Dock(FILL)
+                btn[k].TypeWep = v.Name
+                btn[k].Class = v.Class
+                --btn[k].GetnImage = v.model
+                btn[k].SlotID = v.Slot
+                btn[k]:Droppable("myDNDname")
+                btn[k]:SetParent(pnl[v.Slot])
+                btn[k].Active = true
+                btn[k].Paint = function(s, w, h)
+                    --test
+                    draw.DrawText(v.Amount, "DermaDefault", 0, 0, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
                 end
-
-                btn[k].OnCursorEntered = function()
-                    -- Could add tooltip showing item details
-                end
+                -- Update display with stack info
             end
         end
     end
 end
 
 function GM:ScoreboardHide()
-    if not IsValid(LocalPlayer()) or not LocalPlayer():Alive() then return end
+    if not LocalPlayer():Alive() then return end
     if IsValid(frame) then
-        frame:Remove()
-        frame = nil
-    end
+        if IsValid(frame) then
+            frame:Remove()
+            frame = nil
+        end
 
-    if IsValid(Frame) then
-        Frame:Remove()
-        Frame = nil
-    end
+        if IsValid(Frame) then
+            Frame:Remove()
+            Frame = nil
+        end
 
-    gui.EnableScreenClicker(false)
+        gui.EnableScreenClicker(false)
+    end
 end
 
 hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
@@ -331,7 +336,7 @@ hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
     local found = false
     if IsValid(btn[num]) then
         net.Start("gRustWriteSlot")
-        net.WriteString(btn[num].Class or "")
+        net.WriteString(btn[num].Class)
         net.SendToServer()
         found = true
     end
