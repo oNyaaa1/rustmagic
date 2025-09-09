@@ -108,11 +108,14 @@ local function RightPanelInfo(pnl, ITEM)
     AppList:AddColumn("Have")
     AppList:AddColumn("Create Time")
     AppList:AddColumn("Can Craft")
-    for k, v in pairs(ITEM.Craft()) do
+    for k, v in ipairs(ITEM.Craft()) do
         if istable(v) then
-            print(v.CanCraft)
-            local time = string.FormattedTime(v.Time, "%02i:%02i")
-            AppList:AddLine(tostring(v.AMOUNT), tostring(v.ITEM), "2", "321", tostring(time) .. " Seconds", tostring(v.CanCraft))
+            for i, j in ipairs(v) do
+                if istable(j) then
+                    local time = string.FormattedTime(v.Time, "%02i:%02i")
+                    AppList:AddLine(tostring(j.AMOUNT), tostring(j.ITEM), "2", "321", tostring(time) .. " Seconds", tostring(v.CanCraft))
+                end
+            end
         end
     end
 
@@ -174,7 +177,6 @@ local CraftingInventory = function()
         DButtons:Dock(TOP)
         DButtons:SetTall(50)
         DButtons:SetText("")
-        
         DButtons.DoClick = function(me)
             grid2:Clear()
             for _, vk in pairs(ITEMS) do
@@ -186,7 +188,7 @@ local CraftingInventory = function()
                     btn[_]:SetTall(80)
                     btn[_]:Droppable("myDNDname")
                     btn[_].DoClick = function()
-                        if IsValid(dpnl) then print(dpnl) dpnl:Remove() end
+                        if IsValid(dpnl) then dpnl:Remove() end
                         dpnl = RightPanelInfo(right, vk)
                     end
 

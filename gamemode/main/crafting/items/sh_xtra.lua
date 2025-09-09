@@ -8,11 +8,11 @@ ITEMS:RegisterItem("Cloth", {
     Craft = function()
         return {
             {
+                Time = 0,
                 CanCraft = false,
                 {
                     ITEM = "0",
                     AMOUNT = 0,
-                    Time = 0,
                 },
             },
         }
