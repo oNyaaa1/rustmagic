@@ -21,4 +21,36 @@ function PickleAdilly(ply, wep)
     net.Send(ply)
 end
 
+net.Receive("gRustWriteSlot", function(len, ply)
+    local id = net.ReadFloat()
+    local NewSlot = net.ReadFloat()
+    local proxy_wep = net.ReadString()
+    local proxy_id = net.ReadFloat()
+    local itemz = ITEMS:GetItem(proxy_wep)
+    ply.tbl[proxy_id] = nil
+    if id ~= -1 then
+        ply.tbl[id] = {
+            Slotz = id,
+            Weapon = itemz.Name,
+            Img = itemz.model,
+        }
+
+        PrintTable(ply.tbl)
+        net.Start("DragNDropRust")
+        net.WriteTable(ply.tbl)
+        net.Send(ply)
+    elseif NewSlot ~= -1 then
+        ply.tbl[NewSlot] = {
+            Slotz = NewSlot,
+            Weapon = itemz.Name,
+            Img = itemz.model,
+        }
+
+        PrintTable(ply.tbl)
+        net.Start("DragNDropRust")
+        net.WriteTable(ply.tbl)
+        net.Send(ply)
+    end
+end)
+
 hook.Add("PlayerSpawn", "GiveITem", function(ply) PickleAdilly(ply, "Rock") end)
