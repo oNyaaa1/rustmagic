@@ -15,6 +15,12 @@ function PickleAdilly(ply, wep)
         Img = itemz.model,
     })
 
+    table.insert(ply.tbl, {
+        Slotz = 2,
+        Weapon = wep,
+        Img = itemz.model,
+    })
+
     if itemz.Weapon ~= "" then ply:Give(itemz.Weapon) end
     net.Start("DragNDropRust")
     net.WriteTable(ply.tbl)

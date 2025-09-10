@@ -15,10 +15,6 @@ local DataSaverSlot = {}
 net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
-        for k, v in pairs(DataSaverSlot) do
-            if not IsValid(v.Enetity) then table.remove(DataSaverSlot, k) end
-        end
-
         net.Start("gRustWriteSlot")
         net.WriteFloat(self.CodeSortID or -1)
         net.WriteFloat(self.CodeID or -1)
@@ -66,7 +62,7 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
         grid2:SetHorizontalMargin(2)
         grid2:SetVerticalMargin(2)
         local pnl2 = {}
-        for i = 1, 42 do
+        for i = 8, 49 do
             if not IsValid(pnl2[i]) then
                 pnl2[i] = vgui.Create("DPanel")
                 pnl2[i]:SetTall(80)
