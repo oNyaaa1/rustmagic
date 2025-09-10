@@ -10,18 +10,17 @@ local function FBomb()
     return frame
 end
 
-net.Receive("DragNDropRust", function()
-
-end)
+local tbl = {}
+net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
         for k, v in pairs(panels) do
-            self:AddItem(v)
+            self:SetParent(v)
         end
     end
 end
 
-local function fBombDrawBottomBar(frm)
+local function fBombDrawBottomBar(frm, data)
     if IsValid(frm) then
         local frame = vgui.Create("DPanel", frm)
         frame:SetSize(500, 90)
@@ -34,13 +33,14 @@ local function fBombDrawBottomBar(frm)
         grid:SetColumns(7)
         grid:SetHorizontalMargin(2)
         grid:SetVerticalMargin(2)
+        local pnl1 = {}
         for i = 1, 7 do
-            local pnl = vgui.Create("DPanel")
-            pnl:SetTall(80)
-            pnl:SetWide(180)
-            pnl.CodeSortID = i
-            pnl:Receiver("DroppableRust", DoDrop)
-            grid:AddCell(pnl)
+            pnl1[i] = vgui.Create("DPanel")
+            pnl1[i]:SetTall(80)
+            pnl1[i]:SetWide(180)
+            pnl1[i].CodeSortID = i
+            pnl1[i]:Receiver("DroppableRust", DoDrop)
+            grid:AddCell(pnl1[i])
         end
 
         local frame2 = vgui.Create("DPanel", frm)
@@ -54,20 +54,28 @@ local function fBombDrawBottomBar(frm)
         grid2:SetColumns(7)
         grid2:SetHorizontalMargin(2)
         grid2:SetVerticalMargin(2)
+        local pnl2 = {}
         for i = 1, 42 do
-            local pnl = vgui.Create("DPanel")
-            pnl:SetTall(80)
-            pnl:SetWide(180)
-            pnl.CodeID = i
-            pnl:Receiver("DroppableRust", DoDrop)
-            grid2:AddCell(pnl)
+            pnl2[i] = vgui.Create("DPanel")
+            pnl2[i]:SetTall(80)
+            pnl2[i]:SetWide(180)
+            pnl2[i].CodeID = i
+            pnl2[i]:Receiver("DroppableRust", DoDrop)
+            grid2:AddCell(pnl2[i])
         end
+
+        local DermaImageButton = vgui.Create("DImageButton", pnl1[1])
+        DermaImageButton:SetPos(0, 0) -- Set position
+        DermaImageButton:SetSize(64, 64)
+        DermaImageButton:SetImage("icon16/bomb.png")
+        DermaImageButton:Droppable("DroppableRust")
+        DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
     end
 end
 
 function GM:ScoreboardShow()
     frm = FBomb()
-    fBombDrawBottomBar(frm)
+    fBombDrawBottomBar(frm, tbl)
     gui.EnableScreenClicker(true)
 end
 
