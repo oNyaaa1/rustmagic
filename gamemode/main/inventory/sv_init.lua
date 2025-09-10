@@ -6,17 +6,35 @@ util.AddNetworkString("gRustWriteSlot")
 resource.AddSingleFile("model/tree/treemarker.png")
 hook.Add("InitPostEntity", "WipeStart", function() if game.GetMap() ~= "rust_highland_v1_3a" then game.ConsoleCommand("changelevel rust_highland_v1_3a\n") end end)
 hook.Add("GetFallDamage", "CSSFallDamage", function(ply, speed) return math.max(0, math.ceil(0.2418 * speed - 141.75)) end)
+function FindValidSlotBackWards(ply)
+    local SlotByDefault = 1
+    local FoundSlot = false
+    for i = 1, 7 do
+        if ply.tbl[i] ~= i then
+            SlotByDefault = i
+            FoundSlot = true
+            break
+        end
+    end
+
+    if FoundSlot == false then
+        for i = 8, 48 do
+            if ply.tbl[i] ~= i then
+                SlotByDefault = i
+                break
+            end
+        end
+    end
+    return SlotByDefault
+end
+
 function PickleAdilly(ply, wep)
     ply.tbl = {}
     local itemz = ITEMS:GetItem(wep)
+    local slot = FindValidSlotBackWards(ply)
+    print(slot)
     table.insert(ply.tbl, {
-        Slotz = 1,
-        Weapon = wep,
-        Img = itemz.model,
-    })
-
-    table.insert(ply.tbl, {
-        Slotz = 2,
+        Slotz = slot,
         Weapon = wep,
         Img = itemz.model,
     })
@@ -59,4 +77,7 @@ net.Receive("gRustWriteSlot", function(len, ply)
     end
 end)
 
-hook.Add("PlayerSpawn", "GiveITem", function(ply) PickleAdilly(ply, "Rock") end)
+hook.Add("PlayerSpawn", "GiveITem", function(ply)
+    PickleAdilly(ply, "Rock")
+    FindValidSlotBackWards(ply)
+end)

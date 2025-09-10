@@ -30,7 +30,7 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
         local frame = vgui.Create("DPanel", frms)
         frame:SetSize(500, 90)
         frame:SetPos(w * 0.35, h * 0.85)
-        frame.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(65, 65, 65, 100)) end
+        frame.Paint = function(s, ww, hh) draw.RoundedBox(0, 0, 0, ww, hh, Color(65, 65, 65, 100)) end
         local grid = vgui.Create("ThreeGrid", frame)
         grid:Dock(FILL)
         grid:DockMargin(4, 4, 4, 4)
@@ -53,7 +53,7 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
         local frame2 = vgui.Create("DPanel", frm)
         frame2:SetSize(490, 500)
         frame2:SetPos(w * 0.35, h * 0.25)
-        frame2.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(65, 65, 65, 100)) end
+        frame2.Paint = function(s, ww, hh) draw.RoundedBox(0, 0, 0, ww, hh, Color(65, 65, 65, 100)) end
         local grid2 = vgui.Create("ThreeGrid", frame2)
         grid2:Dock(FILL)
         grid2:DockMargin(4, 4, 4, 4)
@@ -108,7 +108,7 @@ function GM:ScoreboardHide()
     gui.EnableScreenClicker(false)
 end
 
-hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
+/*hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
     if not pressed then return end
     local sub = string.gsub(bind, "slot", "")
     local num = tonumber(sub)
@@ -126,4 +126,4 @@ hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
         net.WriteString("rust_hands")
         net.SendToServer()
     end
-end)
+end)*/
