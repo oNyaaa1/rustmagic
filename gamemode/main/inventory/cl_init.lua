@@ -10,6 +10,9 @@ local function FBomb()
     return frame
 end
 
+net.Receive("DragNDropRust", function()
+
+end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
         for k, v in pairs(panels) do
