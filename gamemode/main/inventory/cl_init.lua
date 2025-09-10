@@ -13,11 +13,7 @@ end
 local tbl = {}
 local DataSaverSlot = {}
 local Saver = nil
-net.Receive("DragNDropRust", function()
-    tbl = net.ReadTable()
-    --DataSaverSlot = tbl
-end)
-
+net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
         for k, v in pairs(DataSaverSlot) do
@@ -25,6 +21,7 @@ function DoDrop(self, panels, bDoDrop, Command, x, y)
             if not IsValid(v.Enetity) then table.remove(DataSaverSlot, k) end
         end
 
+        tbl[1] = nil
         table.insert(DataSaverSlot, {
             Enetity = self,
             Slotz = self.CodeSortID,
@@ -88,12 +85,14 @@ local function fBombDrawBottomBar(frm, data, dataSaver)
             end
         end
 
-        local DermaImageButton = vgui.Create("DImageButton", pnl1[1])
-        DermaImageButton:SetPos(0, 0) -- Set position
-        DermaImageButton:SetSize(64, 64)
-        DermaImageButton:SetImage("icon16/bomb.png")
-        DermaImageButton:Droppable("DroppableRust")
-        DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+        for k, v in pairs(tbl) do
+            local DermaImageButton = vgui.Create("DImageButton", pnl1[v.Slotz])
+            DermaImageButton:SetSize(64, 64)
+            DermaImageButton:SetImage("icon16/bomb.png")
+            DermaImageButton:Droppable("DroppableRust")
+            DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+        end
+
         for k, v in pairs(dataSaver) do
             if v.Slotz ~= nil then
                 local DermaImageButton = vgui.Create("DImageButton", pnl1[v.Slotz])
