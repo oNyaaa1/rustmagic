@@ -10,6 +10,14 @@ local function FBomb()
     return frame
 end
 
+function DoDrop(self, panels, bDoDrop, Command, x, y)
+    if bDoDrop then
+        for k, v in pairs(panels) do
+            self:AddItem(v)
+        end
+    end
+end
+
 local function fBombDrawBottomBar(frm)
     if IsValid(frm) then
         local frame = vgui.Create("DPanel", frm)
@@ -28,6 +36,7 @@ local function fBombDrawBottomBar(frm)
             pnl:SetTall(80)
             pnl:SetWide(180)
             pnl.CodeSortID = i
+            pnl:Receiver("DroppableRust", DoDrop)
             grid:AddCell(pnl)
         end
 
@@ -47,6 +56,7 @@ local function fBombDrawBottomBar(frm)
             pnl:SetTall(80)
             pnl:SetWide(180)
             pnl.CodeID = i
+            pnl:Receiver("DroppableRust", DoDrop)
             grid2:AddCell(pnl)
         end
     end
