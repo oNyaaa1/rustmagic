@@ -11,16 +11,36 @@ local function FBomb()
 end
 
 local tbl = {}
-net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
+local DataSaverSlot = {}
+local Saver = nil
+net.Receive("DragNDropRust", function()
+    tbl = net.ReadTable()
+    --DataSaverSlot = tbl
+end)
+
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
-        for k, v in pairs(panels) do
-            self:SetParent(v)
+        for k, v in pairs(DataSaverSlot) do
+            print(v.Enetity)
+            if not IsValid(v.Enetity) then table.remove(DataSaverSlot, k) end
         end
+
+        table.insert(DataSaverSlot, {
+            Enetity = self,
+            Slotz = self.CodeSortID,
+            SweetSlot = self.CodeID,
+            SlotID = {
+                x = x,
+                y = y
+            }
+        })
+
+        --PrintTable(DataSaverSlot)
+        panels[1]:SetParent(self)
     end
 end
 
-local function fBombDrawBottomBar(frm, data)
+local function fBombDrawBottomBar(frm, data, dataSaver)
     if IsValid(frm) then
         local frame = vgui.Create("DPanel", frm)
         frame:SetSize(500, 90)
@@ -35,12 +55,14 @@ local function fBombDrawBottomBar(frm, data)
         grid:SetVerticalMargin(2)
         local pnl1 = {}
         for i = 1, 7 do
-            pnl1[i] = vgui.Create("DPanel")
-            pnl1[i]:SetTall(80)
-            pnl1[i]:SetWide(180)
-            pnl1[i].CodeSortID = i
-            pnl1[i]:Receiver("DroppableRust", DoDrop)
-            grid:AddCell(pnl1[i])
+            if not IsValid(pnl1[i]) then
+                pnl1[i] = vgui.Create("DPanel")
+                pnl1[i]:SetTall(80)
+                pnl1[i]:SetWide(180)
+                pnl1[i].CodeSortID = i
+                pnl1[i]:Receiver("DroppableRust", DoDrop)
+                grid:AddCell(pnl1[i])
+            end
         end
 
         local frame2 = vgui.Create("DPanel", frm)
@@ -56,12 +78,14 @@ local function fBombDrawBottomBar(frm, data)
         grid2:SetVerticalMargin(2)
         local pnl2 = {}
         for i = 1, 42 do
-            pnl2[i] = vgui.Create("DPanel")
-            pnl2[i]:SetTall(80)
-            pnl2[i]:SetWide(180)
-            pnl2[i].CodeID = i
-            pnl2[i]:Receiver("DroppableRust", DoDrop)
-            grid2:AddCell(pnl2[i])
+            if not IsValid(pnl2[i]) then
+                pnl2[i] = vgui.Create("DPanel")
+                pnl2[i]:SetTall(80)
+                pnl2[i]:SetWide(180)
+                pnl2[i].CodeID = i
+                pnl2[i]:Receiver("DroppableRust", DoDrop)
+                grid2:AddCell(pnl2[i])
+            end
         end
 
         local DermaImageButton = vgui.Create("DImageButton", pnl1[1])
@@ -70,12 +94,27 @@ local function fBombDrawBottomBar(frm, data)
         DermaImageButton:SetImage("icon16/bomb.png")
         DermaImageButton:Droppable("DroppableRust")
         DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+        for k, v in pairs(dataSaver) do
+            if v.Slotz ~= nil then
+                local DermaImageButton = vgui.Create("DImageButton", pnl1[v.Slotz])
+                DermaImageButton:SetSize(64, 64)
+                DermaImageButton:SetImage("icon16/bomb.png")
+                DermaImageButton:Droppable("DroppableRust")
+                DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+            elseif v.SweetSlot ~= nil then
+                local DermaImageButton = vgui.Create("DImageButton", pnl2[v.SweetSlot])
+                DermaImageButton:SetSize(64, 64)
+                DermaImageButton:SetImage("icon16/bomb.png")
+                DermaImageButton:Droppable("DroppableRust")
+                DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+            end
+        end
     end
 end
 
 function GM:ScoreboardShow()
     frm = FBomb()
-    fBombDrawBottomBar(frm, tbl)
+    fBombDrawBottomBar(frm, tbl, DataSaverSlot)
     gui.EnableScreenClicker(true)
 end
 
