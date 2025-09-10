@@ -13,6 +13,7 @@ end
 local tbl = {}
 local DataSaverSlot = {}
 local Saver = nil
+local DermaImageButton = {}
 net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
@@ -21,15 +22,10 @@ function DoDrop(self, panels, bDoDrop, Command, x, y)
             if not IsValid(v.Enetity) then table.remove(DataSaverSlot, k) end
         end
 
-        tbl[1] = nil
         table.insert(DataSaverSlot, {
             Enetity = self,
             Slotz = self.CodeSortID,
             SweetSlot = self.CodeID,
-            SlotID = {
-                x = x,
-                y = y
-            }
         })
 
         --PrintTable(DataSaverSlot)
@@ -85,27 +81,21 @@ local function fBombDrawBottomBar(frm, data, dataSaver)
             end
         end
 
-        for k, v in pairs(tbl) do
-            local DermaImageButton = vgui.Create("DImageButton", pnl1[v.Slotz])
-            DermaImageButton:SetSize(64, 64)
-            DermaImageButton:SetImage("icon16/bomb.png")
-            DermaImageButton:Droppable("DroppableRust")
-            DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+        for _, j in pairs(tbl) do
+            print(j.Slotz)
+            DermaImageButton[1] = vgui.Create("DImageButton", pnl1[1])
+            DermaImageButton[1]:SetSize(70, 75)
+            DermaImageButton[1]:SetImage(j.Img)
+            DermaImageButton[1]:Droppable("DroppableRust")
+            DermaImageButton[1].DoClick = function() MsgN("You clicked the image!") end
         end
 
         for k, v in pairs(dataSaver) do
+            print(v.Slotz)
             if v.Slotz ~= nil then
-                local DermaImageButton = vgui.Create("DImageButton", pnl1[v.Slotz])
-                DermaImageButton:SetSize(64, 64)
-                DermaImageButton:SetImage("icon16/bomb.png")
-                DermaImageButton:Droppable("DroppableRust")
-                DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+                DermaImageButton[1]:SetParent(pnl1[v.Slotz])
             elseif v.SweetSlot ~= nil then
-                local DermaImageButton = vgui.Create("DImageButton", pnl2[v.SweetSlot])
-                DermaImageButton:SetSize(64, 64)
-                DermaImageButton:SetImage("icon16/bomb.png")
-                DermaImageButton:Droppable("DroppableRust")
-                DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
+                DermaImageButton[1]:SetParent(pnl2[v.SweetSlot])
             end
         end
     end
