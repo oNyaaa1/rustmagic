@@ -38,12 +38,17 @@ function ENT:RecoveryTime(pos)
         ent:Activate()
     end)
 end
+/*
+
 
 function ENT:OnTakeDamage(dmg)
     if not IsValid(self) then return end
     local attacker = dmg:GetAttacker()
     if not (IsValid(attacker) and attacker:IsPlayer()) then return end
     attacker:EmitSound("tools/rock_strike_1.mp3")
+    print(attacker:GetWeapon(attacker:GetActiveWeapon():GetClass()))
+   
+   
     self.SetHealthz = self.SetHealthz - 30
     if self.SetHealthz <= 240 then self:SetModel("models/environment/ores/ore_node_stage2.mdl") end
     if self.SetHealthz <= 150 then self:SetModel("models/environment/ores/ore_node_stage3.mdl") end
@@ -52,8 +57,7 @@ function ENT:OnTakeDamage(dmg)
         self:RecoveryTime(self:GetPos())
         self:Remove()
     end
-   
-end
+end*/
 
 function ENT:Think()
 end

@@ -1,5 +1,5 @@
 local ORE_WEAPONS = {
-    ["rust_rock"] = {
+    ["tfa_rustalpha_rocktool"] = {
         ["Metel Ore"] = 1,
         ["Sulfur Ore"] = 1,
         ["Stone"] = 1
@@ -54,8 +54,9 @@ gRust.Mining.MineOres = function(ply, ent, weapon, class)
     local multForOre = tool[seq.item] or 1
     local reward = math.Round(seq.seq[idx] * multForOre)
     local itemClass = seq.item
-    local itemData = gRust.Items[itemClass]
-    local itemName = itemData and itemData:GetName() or itemClass
+    local itemData = ITEMS:GetItem(itemClass)
+    local itemName = itemData and itemData.Name
+    print("test")
     ply:GiveItem(seq.item, reward)
     ply:SendNotification(itemName, NOTIFICATION_PICKUP, "materials/icons/pickup.png", "+" .. reward)
 

@@ -21,8 +21,8 @@ ITEMS:RegisterItem("Sulfur Ore", {
     end,
 }, "Extra")
 
-ITEMS:RegisterItem("Metal Ore", {
-    Name = "Metal Ore",
+ITEMS:RegisterItem("Metel Ore", {
+    Name = "Metel Ore",
     Info = "For smelting and crafting stuff",
     Category = "Extra",
     model = "materials/items/resources/metal_ore.png",
