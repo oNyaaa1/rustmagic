@@ -71,42 +71,60 @@ function PickleAdillyEdit(ply, wep, amount)
         return
     end
 
+    local slotss = 0
     local adding = false
-    local slotz = slot.Slotz
+    local editmode = false
+    local CurrentAmount = 0
     for k, v in pairs(ply.tbl) do
         if v.Weapon == itemz.Name then
             local amont = v.Amount or 0
-            if amont ~= nil and amont >= 1000 then
-                local sloto = FindValidSlotBackWards(ply)
-                ply.tbl[sloto] = {
-                    Slotz = sloto,
-                    Weapon = wep,
-                    Img = itemz.model,
-                    Amount = 0,
-                    SlotFree = false,
-                }
-
-                net.Start("DragNDropRust")
-                net.WriteTable(ply.tbl)
-                net.Send(ply)
+            if amont ~= nil and amont > 1000 then
                 adding = true
+                slotss = k
+                CurrentAmount = amont
             elseif v.Weapon == itemz.Name and amont < 1000 then
-                print("editing", slotz, k, ply.tbl[k].Amount)
-                ply.tbl[k] = {
-                    Slotz = k,
-                    Weapon = wep,
-                    Img = itemz.model,
-                    Amount = amont + amount,
-                    SlotFree = false,
-                }
+                editmode = true
+                slotss = k
+                CurrentAmount = amont
+                break
             end
         end
     end
 
+    if editmode == true and slotss ~= 0 then
+        print("Editing")
+        ply.tbl[slotss] = {
+            Slotz = slotss,
+            Weapon = wep,
+            Img = itemz.model,
+            Amount = math.Clamp(CurrentAmount + amount,0,itemz.StackSize),
+            SlotFree = false,
+        }
+
+        net.Start("DragNDropRust")
+        net.WriteTable(ply.tbl)
+        net.Send(ply)
+        return
+    end
+
+    if adding and slotss ~= 0 then
+        print("Adding")
+        local sloto = FindValidSlotBackWards(ply)
+        ply.tbl[sloto] = {
+            Slotz = sloto,
+            Weapon = wep,
+            Img = itemz.model,
+            Amount = 0,
+            SlotFree = false,
+        }
+
+        net.Start("DragNDropRust")
+        net.WriteTable(ply.tbl)
+        net.Send(ply)
+        return
+    end
+
     if itemz.Weapon ~= "" then ply:Give(itemz.Weapon) end
-    net.Start("DragNDropRust")
-    net.WriteTable(ply.tbl)
-    net.Send(ply)
 end
 
 function PickleAdilly(ply, wep)
