@@ -58,3 +58,4 @@ end
 
 IncludeDir("rustmagic/gamemode/extra")
 IncludeDir("rustmagic/gamemode/main")
+IncludeDir("rustmagic/gamemode/libs")
