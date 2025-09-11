@@ -72,6 +72,7 @@ function PickleAdillyEdit(ply, wep, amount)
     end
 
     local adding = false
+    local slotz = slot.Slotz
     for k, v in pairs(ply.tbl) do
         if v.Weapon == itemz.Name then
             local amont = v.Amount or 0
@@ -89,24 +90,16 @@ function PickleAdillyEdit(ply, wep, amount)
                 net.WriteTable(ply.tbl)
                 net.Send(ply)
                 adding = true
+            elseif v.Weapon == itemz.Name and amont < 1000 then
+                print("editing", slotz, k, ply.tbl[k].Amount)
+                ply.tbl[k] = {
+                    Slotz = k,
+                    Weapon = wep,
+                    Img = itemz.model,
+                    Amount = amont + amount,
+                    SlotFree = false,
+                }
             end
-        end
-    end
-
-    if adding then return end
-    local slotz = slot.Slotz
-    --table.insert(ply.Slots)
-    for k, v in pairs(ply.tbl) do
-        local amountz = v.Amount or 0
-        if v.Weapon == itemz.Name and amountz < 1000 then
-            print("editing", slotz, k, ply.tbl[k].Amount)
-            ply.tbl[slotz] = {
-                Slotz = slotz,
-                Weapon = wep,
-                Img = itemz.model,
-                Amount = amountz + amount,
-                SlotFree = false,
-            }
         end
     end
 
