@@ -25,5 +25,6 @@ function ITEMS:RegisterItem(itemName, items, category)
 end
 
 function ITEMS:GetItem(itemName)
+    print(itemName)
     return self[itemName]
 end

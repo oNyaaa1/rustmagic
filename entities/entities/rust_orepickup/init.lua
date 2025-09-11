@@ -5,7 +5,7 @@ include("shared.lua")
 local OreTypes = {
     {
         model = "models/darky_m/rust/worldmodels/stone.mdl",
-        item = "stone",
+        item = "Stone",
         name = "Stone",
         amount = {15, 25}
     },
@@ -16,8 +16,8 @@ local OreTypes = {
         amount = {10, 20}
     },
     {
-        model = "models/darky_m/rust/worldmodels/stone.mdl", -- Using stone model for metal as specified
-        item = "metal.ore",
+        model = "models/darky_m/rust/worldmodels/metal_ore.mdl", -- Using stone model for metal as specified
+        item = "Metal Ore",
         name = "Metal Ore",
         amount = {8, 15}
     }
@@ -45,9 +45,9 @@ function ENT:Use(activator, caller)
     activator:SendNotification(self.OreType.name, NOTIFICATION_PICKUP, "materials/icons/pickup.png", "+" .. amount)
     -- Map item names to available sound groups
     local soundMap = {
-        ["Stone"] = "stone",
-        ["Sulfur Ore"] = "stone", -- Use stone sound for sulfur ore
-        ["Metal Ore"] = "metal" -- Use metal sound for metal ore
+        ["Stone"] = "Stone",
+        ["Sulfur Ore"] = "Sulfur Ore", -- Use stone sound for sulfur ore
+        ["Metal Ore"] = "Metal Ore" -- Use metal sound for metal ore
     }
 
     activator:EmitSound("ui/items/pickup_stone_3.wav")

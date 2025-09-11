@@ -55,6 +55,8 @@ function PickleAdillyEdit(ply, wep, amount)
     end
 
     local itemz = ITEMS:GetItem(wep)
+    PrintTable(itemz)
+    print(wep,itemz)
     if not itemz then
         print("Cannot find", wep, " As an item!")
         return
