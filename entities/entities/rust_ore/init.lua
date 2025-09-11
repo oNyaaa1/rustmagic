@@ -52,6 +52,7 @@ function ENT:OnTakeDamage(dmg)
         self:RecoveryTime(self:GetPos())
         self:Remove()
     end
+   
 end
 
 function ENT:Think()

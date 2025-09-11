@@ -85,11 +85,11 @@ function PickleAdillyEdit(ply, wep, amount)
         if v.Weapon == itemz.Name then
             local amont = v.Amount or 0
             print(amont, v.Amount)
-            if amont ~= nil and amont >= 1000 then
+            if amont ~= nil and itemz.StackSize and amont >= itemz.StackSize then
                 adding = true
                 slotss = k
                 CurrentAmount = amont
-            elseif v.Weapon == itemz.Name and amont < 1000 then
+            elseif v.Weapon == itemz.Name and itemz.StackSize and amont < itemz.StackSize then
                 editmode = true
                 slotss = k
                 CurrentAmount = amont

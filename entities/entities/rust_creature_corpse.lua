@@ -7,7 +7,6 @@ function ENT:Initialize()
     self:PhysicsInitStatic(SOLID_VPHYSICS)
     self:SetMoveType(MOVETYPE_NONE)
     self:SetSolid(SOLID_VPHYSICS)
-    -- Default values - will be set when spawned
     self:SetHealth(100)
     self:SetMaxHealth(100)
 end
