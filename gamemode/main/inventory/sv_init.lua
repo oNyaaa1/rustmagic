@@ -55,6 +55,11 @@ function PickleAdillyEdit(ply, wep, amount)
     end
 
     local itemz = ITEMS:GetItem(wep)
+    if not itemz then
+        print("Cannot find", wep, " As an item!")
+        return
+    end
+
     local slot = FindSlot(ply, wep)
     if slot == nil then
         print("slot == nil")
@@ -63,7 +68,7 @@ function PickleAdillyEdit(ply, wep, amount)
             Slotz = sloto,
             Weapon = wep,
             Img = itemz.model,
-            Amount = 0,
+            Amount = amount,
         }
 
         net.Start("DragNDropRust")
@@ -116,7 +121,7 @@ function PickleAdillyEdit(ply, wep, amount)
             Slotz = sloto,
             Weapon = wep,
             Img = itemz.model,
-            Amount = 0,
+            Amount = amount,
             SlotFree = false,
         }
 
@@ -144,7 +149,7 @@ function PickleAdilly(ply, wep)
         Slotz = slot,
         Weapon = wep,
         Img = itemz.model,
-        Amount = 0,
+        Amount = 1,
         SlotFree = false,
     }
 

@@ -119,7 +119,7 @@ gRust.Mining.MineCreatures = function(ply, ent, weapon, class)
         for _, lootItem in pairs(creatureData.loot) do
             local amount = math.random(lootItem.min, lootItem.max)
             print(lootItem.item,amount)
-            //ply:GiveItem(lootItem.item, amount)
+            ply:GiveItem(lootItem.item, amount)
             ply:SendNotification(lootItem.name, NOTIFICATION_PICKUP, "materials/icons/pickup.png", "+" .. amount)
         end
 
