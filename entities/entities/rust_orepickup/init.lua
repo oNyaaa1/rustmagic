@@ -50,8 +50,7 @@ function ENT:Use(activator, caller)
         ["Metal Ore"] = "metal" -- Use metal sound for metal ore
     }
 
-    local soundName = soundMap[self.OreType.item]
-    activator:EmitSound("items/ammo_pickup.wav")
+    activator:EmitSound("ui/items/pickup_stone_3.wav")
     LoggerPlayer(activator, "picked up " .. amount .. " " .. self.OreType.name .. ".")
     self.CurrentUses = self.CurrentUses + 1
     self:Remove()
