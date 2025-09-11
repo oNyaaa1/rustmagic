@@ -6,7 +6,8 @@ util.AddNetworkString("gRustWriteSlot")
 resource.AddSingleFile("model/tree/treemarker.png")
 hook.Add("InitPostEntity", "WipeStart", function() if game.GetMap() ~= "rust_highland_v1_3a" then game.ConsoleCommand("changelevel rust_highland_v1_3a\n") end end)
 hook.Add("GetFallDamage", "CSSFallDamage", function(ply, speed) return math.max(0, math.ceil(0.2418 * speed - 141.75)) end)
-function FindValidSlotBackWards(ply)
+function FindValidSlotBackWards(ply,select_Slot)
+    if select_Slot then return select_Slot end
     local SlotByDefault = 1
     local FoundSlot = false
     for i = 1, 48 do
@@ -78,7 +79,8 @@ function PickleAdillyEdit(ply, wep, amount)
     for k, v in pairs(ply.tbl) do
         if v.Weapon == itemz.Name then
             local amont = v.Amount or 0
-            if amont ~= nil and amont > 1000 then
+            print(amont, v.Amount)
+            if amont ~= nil and amont >= 1000 then
                 adding = true
                 slotss = k
                 CurrentAmount = amont
@@ -97,7 +99,7 @@ function PickleAdillyEdit(ply, wep, amount)
             Slotz = slotss,
             Weapon = wep,
             Img = itemz.model,
-            Amount = math.Clamp(CurrentAmount + amount,0,itemz.StackSize),
+            Amount = math.Clamp(CurrentAmount + amount, 0, itemz.StackSize),
             SlotFree = false,
         }
 
@@ -107,7 +109,7 @@ function PickleAdillyEdit(ply, wep, amount)
         return
     end
 
-    if adding and slotss ~= 0 then
+    if adding then
         print("Adding")
         local sloto = FindValidSlotBackWards(ply)
         ply.tbl[sloto] = {
@@ -131,7 +133,7 @@ function PickleAdilly(ply, wep)
     if ply.Slots == nil then ply.Slotz = {} end
     if ply.tbl == nil then ply.tbl = {} end
     local itemz = ITEMS:GetItem(wep)
-    local slot = FindValidSlotBackWards(ply)
+    local slot = FindValidSlotBackWards(ply,1)
     --table.insert(ply.Slots)
     ply.tbl[slot] = {
         Slotz = slot,
@@ -153,14 +155,16 @@ net.Receive("gRustWriteSlot", function(len, ply)
     local proxy_wep = net.ReadString()
     local proxy_id = net.ReadFloat()
     local itemz = ITEMS:GetItem(proxy_wep)
-    ply.tbl[proxy_id] = nil
     if id ~= -1 then
         ply.tbl[id] = {
             Slotz = id,
             Weapon = itemz.Name,
             Img = itemz.model,
+            Amount = ply.tbl[proxy_id].Amount,
+            SlotFree = false,
         }
 
+        ply.tbl[proxy_id] = nil
         net.Start("DragNDropRust")
         net.WriteTable(ply.tbl)
         net.Send(ply)
@@ -169,8 +173,10 @@ net.Receive("gRustWriteSlot", function(len, ply)
             Slotz = NewSlot,
             Weapon = itemz.Name,
             Img = itemz.model,
+            Amount = ply.tbl[proxy_id].Amount,
         }
 
+        ply.tbl[proxy_id] = nil
         net.Start("DragNDropRust")
         net.WriteTable(ply.tbl)
         net.Send(ply)

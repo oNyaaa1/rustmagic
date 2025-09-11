@@ -14,7 +14,6 @@ local tbl = {}
 local DataSaverSlot = {}
 net.Receive("DragNDropRust", function()
     tbl = net.ReadTable()
-    PrintTable(tbl)
 end)
 
 function DoDrop(self, panels, bDoDrop, Command, x, y)

@@ -101,7 +101,7 @@ local function MakeCreatureCorpse(ent, damageForce)
 end
 
 -- Expose function for external use
-gRust.Mining.SpawnCreatureCorpse = function(ent) return MakeCreatureCorpse(ent) end
+gRust.Mining.SpawnCreatureCorpse = function(ent) print(ent) return MakeCreatureCorpse(ent) end
 gRust.Mining.MineCreatures = function(ply, ent, weapon, class)
     if not ply.Wood_Cutting_Tool then ply.Wood_Cutting_Tool = 0 end
     if ply.Wood_Cutting_Tool > CurTime() then return end
@@ -118,11 +118,11 @@ gRust.Mining.MineCreatures = function(ply, ent, weapon, class)
         -- Give loot only from corpses
         for _, lootItem in pairs(creatureData.loot) do
             local amount = math.random(lootItem.min, lootItem.max)
-            ply:GiveItem(lootItem.item, amount)
+            print(lootItem.item,amount)
+            //ply:GiveItem(lootItem.item, amount)
             ply:SendNotification(lootItem.name, NOTIFICATION_PICKUP, "materials/icons/pickup.png", "+" .. amount)
         end
 
-        ply:SyncInventory()
         -- Remove corpse when fully mined
         if newHealth <= 0 then ent:Remove() end
     end

@@ -118,8 +118,8 @@ local function RightPanelInfo(pnl, ITEM)
             end
         end
     end
-
-    AppList.OnRowSelected = function(lst, index, pnl) print("Selected " .. pnl:GetColumnText(1) .. " ( " .. pnl:GetColumnText(2) .. " ) at index " .. index) end
+    //pnl:GetColumnText(1) index
+    AppList.OnRowSelected = function(lst, index, pnl) end
     local Buttonzz = vgui.Create("DButton", dpanel)
     Buttonzz:Dock(BOTTOM)
     Buttonzz:DockMargin(400, 0, 0, 0)
