@@ -12,10 +12,7 @@ end
 
 local tbl = {}
 local DataSaverSlot = {}
-net.Receive("DragNDropRust", function()
-    tbl = net.ReadTable()
-end)
-
+net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
         net.Start("gRustWriteSlot")
@@ -77,9 +74,10 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
         end
 
         for _, j in pairs(tbl) do
-            if j.Slotz != nil and j.Slotz >= 1 and j.Slotz <= 7 then
+            if j.Slotz ~= nil and j.Slotz >= 1 and j.Slotz <= 7 then
                 local DermaImageButton = vgui.Create("DImageButton", pnl1[j.Slotz])
-                DermaImageButton:SetSize(70, 75)
+                DermaImageButton:SetSize(70, 71)
+                DermaImageButton:SetPos(0, 4)
                 DermaImageButton:SetImage(j.Img)
                 DermaImageButton:Droppable("DroppableRust")
                 DermaImageButton.DoClick = function() MsgN("You clicked the image!") end
@@ -87,9 +85,10 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
                 DermaImageButton.Weap = j.Weapon
                 DermaImageButton.OldSlot = j.Slotz
                 DermaImageButton.Paint = function(s, w, h) draw.DrawText(tostring(j.Amount), "Default", 0, 0, Color(0, 0, 0), TEXT_ALIGN_LEFT) end
-            elseif j.Slotz != nil and j.Slotz >= 8 and j.Slotz <= 49 then
+            elseif j.Slotz ~= nil and j.Slotz >= 8 and j.Slotz <= 49 then
                 local DermaImageButton = vgui.Create("DImageButton", pnl2[j.Slotz])
-                DermaImageButton:SetSize(70, 75)
+                DermaImageButton:SetSize(70, 71)
+                DermaImageButton:SetPos(0, 4)
                 DermaImageButton:SetImage(j.Img)
                 DermaImageButton:Droppable("DroppableRust")
                 DermaImageButton.DoClick = function() MsgN("You clicked the image!") end

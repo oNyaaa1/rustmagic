@@ -27,21 +27,6 @@ hook.Add("EntityTakeDamage", "gRust.ResourceHits", function(ent, dmg)
     if not IsValid(wep) then return end
     local class = wep:GetClass()
     local maxHP = TREE_MODELS[ent:GetModel()]
-    if maxHP then
-        local validTool = gRust.Mining.IsValidWoodcuttingTool(class)
-        if not validTool then
-            dmg:SetDamage(0)
-            return true
-        end
-
-        LoggerPlayer(ply, "is damaging a tree")
-        net.Start("gRust.TreeEffects")
-        net.WriteVector(ply:GetEyeTrace().HitPos)
-        net.WriteEntity(ent)
-        net.Send(ply)
-        gRust.Mining.MineTrees(ply, ent, maxHP, weapon, class)
-    end
-
     local isCreature = CREATURES_ENTITIES[ent:GetClass()]
     if ent:GetClass() == "rust_creature_corpse" then gRust.Mining.MineCreatures(ply, ent, weapon, class) end
     if ent:GetClass() == "rust_ore" then

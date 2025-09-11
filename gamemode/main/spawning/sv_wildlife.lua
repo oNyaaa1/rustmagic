@@ -50,6 +50,7 @@ local function MakeCreatureCorpse(ent, damageForce)
     local success, err = pcall(function()
         corpse:Spawn()
         corpse:Activate()
+        corpse:DropToFloor()
     end)
 
     if not success then
