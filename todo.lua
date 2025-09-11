@@ -1,8 +1,3 @@
 /*
-Fixed wood bug
-Fixed wood bug slot problem
-chicken corpses
-Can farm chicken corpses
-Made the image smaller so u can see text
-Fixed small bug
+
 */
