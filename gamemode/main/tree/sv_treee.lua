@@ -170,11 +170,11 @@ hook.Add("EntityTakeDamage", "TakeWoodDmg", function(ent, dmginfo)
         local idx = math.min(ent.treeHits, #WOOD_SEQ)
         local reward = math.Round(WOOD_SEQ[idx] * tool.mult)
         ply:SendNotification("Wood", NOTIFICATION_PICKUP, "materials/icons/pickup.png", "+" .. reward)
-        ply:GiveItem("Wood", reward)
+        PickleAdillyEdit(ply, "Wood", reward)
         if ent.treeHealth <= 0 then
-            --SendTreeHit(ply, nil)
-            --MakeTreeFall(ent)
-            -- return
+            SendTreeHit(ply, nil)
+            MakeTreeFall(ent)
+            return
         end
 
         SendTreeHit(ply, ent)

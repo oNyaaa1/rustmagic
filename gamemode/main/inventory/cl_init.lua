@@ -12,7 +12,11 @@ end
 
 local tbl = {}
 local DataSaverSlot = {}
-net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
+net.Receive("DragNDropRust", function()
+    tbl = net.ReadTable()
+    PrintTable(tbl)
+end)
+
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
         net.Start("gRustWriteSlot")
@@ -74,7 +78,7 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
         end
 
         for _, j in pairs(tbl) do
-            if IsValid(pnl1[j.Slotz]) then
+            if j.Slotz != nil and j.Slotz >= 1 and j.Slotz <= 7 then
                 local DermaImageButton = vgui.Create("DImageButton", pnl1[j.Slotz])
                 DermaImageButton:SetSize(70, 75)
                 DermaImageButton:SetImage(j.Img)
@@ -83,7 +87,8 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
                 DermaImageButton.Model_IMG = j.Img
                 DermaImageButton.Weap = j.Weapon
                 DermaImageButton.OldSlot = j.Slotz
-            elseif IsValid(pnl2[j.Slotz]) then
+                DermaImageButton.Paint = function(s, w, h) draw.DrawText(tostring(j.Amount), "Default", 0, 0, Color(0, 0, 0), TEXT_ALIGN_LEFT) end
+            elseif j.Slotz != nil and j.Slotz >= 8 and j.Slotz <= 49 then
                 local DermaImageButton = vgui.Create("DImageButton", pnl2[j.Slotz])
                 DermaImageButton:SetSize(70, 75)
                 DermaImageButton:SetImage(j.Img)
@@ -92,6 +97,7 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
                 DermaImageButton.Model_IMG = j.Img
                 DermaImageButton.Weap = j.Weapon
                 DermaImageButton.OldSlot = j.Slotz
+                DermaImageButton.Paint = function(s, w, h) draw.DrawText(tostring(j.Amount), "Default", 0, 0, Color(0, 0, 0), TEXT_ALIGN_LEFT) end
             end
         end
     end
@@ -107,8 +113,7 @@ function GM:ScoreboardHide()
     if IsValid(frm) then frm:Remove() end
     gui.EnableScreenClicker(false)
 end
-
-/*hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
+--[[hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
     if not pressed then return end
     local sub = string.gsub(bind, "slot", "")
     local num = tonumber(sub)
@@ -126,4 +131,4 @@ end
         net.WriteString("rust_hands")
         net.SendToServer()
     end
-end)*/
+end)]]
