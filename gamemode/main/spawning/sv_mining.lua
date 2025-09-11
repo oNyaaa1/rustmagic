@@ -1,37 +1,37 @@
 local ORE_WEAPONS = {
     ["rust_rock"] = {
-        ["metal.ore"] = 1,
-        ["sulfur.ore"] = 1,
-        ["stone"] = 1
+        ["Metel Ore"] = 1,
+        ["Sulfur Ore"] = 1,
+        ["Stone"] = 1
     },
     ["rust_stonepickaxe"] = {
-        ["metal.ore"] = 1.94,
-        ["sulfur.ore"] = 2.57,
-        ["stone"] = 2.11733
+        ["Metel Ore"] = 1.94,
+        ["Sulfur Ore"] = 2.57,
+        ["Stone"] = 2.11733
     },
     ["rust_pickaxe"] = {
-        ["metal.ore"] = 2.4,
-        ["sulfur.ore"] = 3,
-        ["stone"] = 2.667
+        ["Metel Ore"] = 2.4,
+        ["Sulfur Ore"] = 3,
+        ["Stone"] = 2.667
     },
     ["rust_jackhammer"] = {
-        ["metal.ore"] = 2.4,
-        ["sulfur.ore"] = 3,
-        ["stone"] = 2.667
+        ["Metel Ore"] = 2.4,
+        ["Sulfur Ore"] = 3,
+        ["Stone"] = 2.667
     }
 }
 
 local ORE_SEQ = {
     [1] = {
-        item = "metal.ore",
+        item = "Metel Ore",
         seq = {25, 25, 25, 25, 25, 25, 25, 25, 25, 25}
     },
     [2] = {
-        item = "sulfur.ore",
+        item = "Sulfur Ore",
         seq = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
     },
     [3] = {
-        item = "stone",
+        item = "Stone",
         seq = {39, 39, 38, 38, 38, 37, 37, 37, 36, 36}
     }
 }

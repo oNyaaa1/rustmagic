@@ -1,15 +1,15 @@
 local CREATURE_LOOT = {
-    ["npc_vj_f_killerchicken"] = {
+    ["npc_rust_chicken"] = {
         health = 100, -- How much damage needed to kill it
         loot = {
             {
-                item = "cloth",
+                item = "Cloth",
                 min = 1,
                 max = 2,
                 name = "Cloth"
             },
             {
-                item = "fat.animal",
+                item = "Animal Fat",
                 min = 1,
                 max = 3,
                 name = "Animal Fat"

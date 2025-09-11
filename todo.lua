@@ -1,4 +1,5 @@
 /*
 Fixed wood bug
 Fixed wood bug slot problem
+chicken corpses
 */

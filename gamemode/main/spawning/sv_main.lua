@@ -17,7 +17,7 @@ local TREE_MODELS = {
 }
 
 local CREATURES_ENTITIES = {
-    ["npc_vj_f_killerchicken"] = true
+    ["npc_rust_chicken"] = true
 }
 
 hook.Add("EntityTakeDamage", "gRust.ResourceHits", function(ent, dmg)
@@ -54,7 +54,6 @@ end)
 
 -- Hook to spawn corpses when creatures die naturally
 hook.Add("OnNPCKilled", "gRust.CreatureCorpses", function(npc, attacker, inflictor)
-    print(npc:GetClass())
     if CREATURES_ENTITIES[npc:GetClass()] then
         -- Import the function from wildlife_sv.lua
         if gRust.Mining and gRust.Mining.SpawnCreatureCorpse then gRust.Mining.SpawnCreatureCorpse(npc) end
