@@ -74,7 +74,6 @@ local dpanel = dpanel or nil
 local dpnl = nil
 local function RightPanelInfo(pnl, ITEM)
     local ply = LocalPlayer()
-    PrintTable(GLOBAL.tbl)
     if not GLOBAL.tbl then return end
     if not IsValid(ply) then return end
     if IsValid(dpanel) then dpanel:Remove() end
@@ -132,7 +131,6 @@ local function RightPanelInfo(pnl, ITEM)
         for k, v in ipairs(ITEM.Craft()) do
             if istable(v) and a.Weapon != nil then
                 for i, j in ipairs(v) do
-                    print(a.Weapon, j.ITEM)
                     if istable(j) and a.Amount ~= nil and a.Weapon == j.ITEM then
                         total = 1
                         local time = string.FormattedTime(v.Time, "%02i:%02i")
@@ -168,7 +166,7 @@ local function RightPanelInfo(pnl, ITEM)
         draw.DrawText("CRAFT", "CraftingRustFont", 110, 25, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
     end
 
-    Buttonzz.DoClick = function() print("Test", ITEM.Name) end
+    Buttonzz.DoClick = function() net.Start("CraftingAbility") net.WriteTable({ITEM.Name}) net.SendToServer() end
     return dpanel2
 end
 

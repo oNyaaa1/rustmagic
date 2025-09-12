@@ -15,10 +15,12 @@ GLOBAL.tbl = {}
 local DataSaverSlot = {}
 net.Receive("DragNDropRust", function() GLOBAL.tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
-    if bDoDrop then
+    if bDoDrop and IsValid(panels[1]) and IsValid(self) then
+        local csi = self.CodeSortID or -1
+        local cso = self.CodeID or -1
         net.Start("gRustWriteSlot")
-        net.WriteFloat(self.CodeSortID or -1)
-        net.WriteFloat(self.CodeID or -1)
+        net.WriteFloat(csi)
+        net.WriteFloat(cso)
         net.WriteString(panels[1].Weap)
         net.WriteFloat(panels[1].OldSlot or -1)
         net.SendToServer()
