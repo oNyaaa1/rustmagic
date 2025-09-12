@@ -132,10 +132,12 @@ local function RightPanelInfo(pnl, ITEM)
         for k, v in ipairs(ITEM.Craft()) do
             if istable(v) then
                 for i, j in ipairs(v) do
-                    if istable(j) and a.Amount != nil and a.Weapon == j.ITEM then
-                        print(a.Amount,v.Weapon,j.ITEM)
+                    if istable(j) and a.Amount ~= nil and a.Weapon == j.ITEM then
+                        print(a.Amount, v.Weapon, j.ITEM)
                         total = 1
                         local time = string.FormattedTime(v.Time, "%02i:%02i")
+                        lst[i] = {tostring(j.AMOUNT), tostring(j.ITEM), total, tostring(a.Amount or 0), tostring(time) .. " Seconds", tostring(v.CanCraft)}
+                    elseif istable(j) and a.Weapon ~= j.ITEM and a.Amount == nil then
                         lst[i] = {tostring(j.AMOUNT), tostring(j.ITEM), total, tostring(a.Amount or 0), tostring(time) .. " Seconds", tostring(v.CanCraft)}
                     end
                 end
