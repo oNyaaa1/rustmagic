@@ -73,6 +73,10 @@ local right = right or nil
 local dpanel = dpanel or nil
 local dpnl = nil
 local function RightPanelInfo(pnl, ITEM)
+    local ply = LocalPlayer()
+    PrintTable(GLOBAL.tbl)
+    if not GLOBAL.tbl then return end
+    if not IsValid(ply) then return end
     if IsValid(dpanel) then dpanel:Remove() end
     dpanel2 = vgui.Create("DPanel", pnl)
     dpanel2:Dock(TOP)
@@ -99,27 +103,58 @@ local function RightPanelInfo(pnl, ITEM)
     dpanel:DockPadding(0, 1, 0, 0)
     dpanel:SetSize(Width * 0.10, Height * 0.22)
     dpanel.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(94, 94, 94, 150)) end
-    local AppList = vgui.Create("DListView", dpanel)
-    AppList:Dock(FILL)
-    AppList:SetMultiSelect(false)
-    AppList:AddColumn("Amount")
-    AppList:AddColumn("Item Type")
-    AppList:AddColumn("Total")
-    AppList:AddColumn("Have")
-    AppList:AddColumn("Create Time")
-    AppList:AddColumn("Can Craft")
-    for k, v in ipairs(ITEM.Craft()) do
-        if istable(v) then
-            for i, j in ipairs(v) do
-                if istable(j) then
-                    local time = string.FormattedTime(v.Time, "%02i:%02i")
-                    AppList:AddLine(tostring(j.AMOUNT), tostring(j.ITEM), "2", "321", tostring(time) .. " Seconds", tostring(v.CanCraft))
+    local tbl = {"Amount", "Item Type", "Total", "Have", "Create Time", "Can Craft"}
+    local LabelNames = dpanel:Add("DPanel")
+    LabelNames:Dock(TOP)
+    LabelNames:SetTall(Height * 0.03)
+    LabelNames:DockMargin(7, 0, 0, 4)
+    LabelNames.Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(0, 0, 0, 150)) end
+    for k, v in ipairs(tbl) do
+        local LabelName = vgui.Create("DLabel", LabelNames)
+        LabelName:SetFont("Default")
+        LabelName:Dock(LEFT)
+        LabelName:DockMargin(0, 0, 50, 0)
+        LabelName:SetText(v)
+        LabelName:SizeToContents()
+    end
+
+    local LabelNamesz = {}
+    for i = 1, 2 do
+        LabelNamesz[i] = dpanel:Add("DPanel")
+        LabelNamesz[i]:Dock(TOP)
+        LabelNamesz[i]:SetTall(Height * 0.03)
+        LabelNamesz[i]:DockMargin(7, 0, 0, 2)
+        LabelNamesz[i].Paint = function(s, w, h) draw.RoundedBox(0, 0, 0, w, h, Color(0, 0, 0, 150)) end
+    end
+
+    local lst = {}
+    for _, a in pairs(GLOBAL.tbl) do
+        for k, v in ipairs(ITEM.Craft()) do
+            if istable(v) then
+                for i, j in ipairs(v) do
+                    if istable(j) then
+                        total = 1
+                        local time = string.FormattedTime(v.Time, "%02i:%02i")
+                        lst[i] = {tostring(j.AMOUNT), tostring(j.ITEM), total, tostring(a.Amount or 0), tostring(time) .. " Seconds", tostring(v.CanCraft)}
+                    end
                 end
             end
         end
     end
-    //pnl:GetColumnText(1) index
-    AppList.OnRowSelected = function(lst, index, pnl) end
+
+    for i = 1, 2 do
+        for j = 1, 6 do
+            if lst[i] then
+                local LabelName = vgui.Create("DLabel", LabelNamesz[i])
+                LabelName:Dock(LEFT)
+                LabelName:SetFont("Default")
+                LabelName:DockMargin(0, 0, 70, 0)
+                LabelName:SetText(tostring(lst[i][j]))
+                LabelName:SizeToContents()
+            end
+        end
+    end
+
     local Buttonzz = vgui.Create("DButton", dpanel)
     Buttonzz:Dock(BOTTOM)
     Buttonzz:DockMargin(400, 0, 0, 0)
@@ -129,6 +164,8 @@ local function RightPanelInfo(pnl, ITEM)
         draw.RoundedBox(0, 0, 0, w, h, Color(66, 66, 66))
         draw.DrawText("CRAFT", "CraftingRustFont", 110, 25, Color(255, 255, 255, 255), TEXT_ALIGN_LEFT)
     end
+
+    Buttonzz.DoClick = function() print("Test", ITEM.Name) end
     return dpanel2
 end
 

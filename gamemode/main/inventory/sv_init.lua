@@ -62,7 +62,6 @@ function PickleAdillyEdit(ply, wep, amount)
 
     local slot = FindSlot(ply, wep)
     if slot == nil then
-        print("slot == nil")
         local sloto = FindValidSlotBackWards(ply)
         ply.tbl[sloto] = {
             Slotz = sloto,
@@ -84,7 +83,6 @@ function PickleAdillyEdit(ply, wep, amount)
     for k, v in pairs(ply.tbl) do
         if v.Weapon == itemz.Name then
             local amont = v.Amount or 0
-            print(amont, v.Amount)
             if amont ~= nil and itemz.StackSize and amont >= itemz.StackSize then
                 adding = true
                 slotss = k
@@ -99,7 +97,6 @@ function PickleAdillyEdit(ply, wep, amount)
     end
 
     if editmode == true and slotss ~= 0 then
-        print("Editing")
         ply.tbl[slotss] = {
             Slotz = slotss,
             Weapon = wep,
@@ -115,7 +112,6 @@ function PickleAdillyEdit(ply, wep, amount)
     end
 
     if adding then
-        print("Adding")
         local sloto = FindValidSlotBackWards(ply)
         ply.tbl[sloto] = {
             Slotz = sloto,

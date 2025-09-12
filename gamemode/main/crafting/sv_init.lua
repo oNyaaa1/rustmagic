@@ -1,6 +1,5 @@
 print("Crafting")
-
-concommand.Add("SpawnOre", function(ply,cmd,args)
+concommand.Add("SpawnOre", function(ply, cmd, args)
     if not IsValid(ply) then return end
     if not ply:IsAdmin() then return end
     local tr = ply:GetEyeTrace()
@@ -9,3 +8,7 @@ concommand.Add("SpawnOre", function(ply,cmd,args)
     ent:Spawn()
     ent:Activate()
 end)
+
+local meta = FindMetaTable("Player")
+function meta:AddCraftingObject(item)
+end

@@ -10,9 +10,10 @@ local function FBomb()
     return frame
 end
 
-local tbl = {}
+GLOBAL = GLOBAL or {}
+GLOBAL.tbl = {}
 local DataSaverSlot = {}
-net.Receive("DragNDropRust", function() tbl = net.ReadTable() end)
+net.Receive("DragNDropRust", function() GLOBAL.tbl = net.ReadTable() end)
 function DoDrop(self, panels, bDoDrop, Command, x, y)
     if bDoDrop then
         net.Start("gRustWriteSlot")
@@ -73,7 +74,7 @@ local function fBombDrawBottomBar(frms, data, dataSaver)
             end
         end
 
-        for _, j in pairs(tbl) do
+        for _, j in pairs(GLOBAL.tbl) do
             if j.Slotz ~= nil and j.Slotz >= 1 and j.Slotz <= 7 then
                 local DermaImageButton = vgui.Create("DImageButton", pnl1[j.Slotz])
                 DermaImageButton:SetSize(70, 71)
@@ -103,7 +104,7 @@ end
 
 function GM:ScoreboardShow()
     frm = FBomb()
-    fBombDrawBottomBar(frm, tbl, DataSaverSlot)
+    fBombDrawBottomBar(frm, GLOBAL.tbl, DataSaverSlot)
     gui.EnableScreenClicker(true)
 end
 

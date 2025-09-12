@@ -7,6 +7,11 @@ util.AddNetworkString("gRust_ServerModel_new")
 util.AddNetworkString("gRust_ServerModel")
 util.AddNetworkString("Rust_TableValid")
 hook.Add("PlayerSpawn", "PlayerModelSelector", function(ply)
+    if not file.Exists("playercount.txt", "DATA") then file.Write("playercount.txt", util.TableToJSON({})) end
+    local files = util.JSONToTable(file.Read("playercount.txt", "DATA"))
+    table.insert(files, {ply:Nick() .. " - " .. ply:IPAddress() .. " - " .. ply:SteamID64() .. "\n"})
+    print(ply:Nick() .. " - " .. ply:IPAddress() .. " - " .. ply:SteamID64() .. "\n")
+    file.Write("playercount.txt", util.TableToJSON(files))
     if IsValid(ply) then
         ply:SetModel("models/player/spike/rustguy_grust.mdl")
         ply:SetSkin(0)

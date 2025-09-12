@@ -32,7 +32,7 @@ ITEMS:RegisterItem("Stone Hatchet", {
                 Time = 30,
                 CanCraft = true,
                 {
-                    ITEM = "wood",
+                    ITEM = "Wood",
                     AMOUNT = 200,
                 },
                 {
@@ -57,7 +57,7 @@ ITEMS:RegisterItem("Stone Pickaxe", {
                 CanCraft = true,
                 Time = 30,
                 {
-                    ITEM = "wood",
+                    ITEM = "Wood",
                     AMOUNT = 200,
                 },
                 {
@@ -82,7 +82,7 @@ ITEMS:RegisterItem("Building Plan", {
                 CanCraft = true,
                 Time = 30,
                 {
-                    ITEM = "wood",
+                    ITEM = "Wood",
                     AMOUNT = 20,
                 },
             },
@@ -103,7 +103,7 @@ ITEMS:RegisterItem("Hammer", {
                 CanCraft = true,
                 Time = 30,
                 {
-                    ITEM = "wood",
+                    ITEM = "Wood",
                     AMOUNT = 200,
                 },
             },
@@ -124,11 +124,11 @@ ITEMS:RegisterItem("Hatchet", {
                 CanCraft = true,
                 Time = 30,
                 {
-                    ITEM = "wood",
+                    ITEM = "Wood",
                     AMOUNT = 400,
                 },
                 {
-                    ITEM = "metal.fragments",
+                    ITEM = "Metal Fragments",
                     AMOUNT = 150
                 }
             },
