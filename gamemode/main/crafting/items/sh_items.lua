@@ -24,7 +24,7 @@ ITEMS:RegisterItem("Stone Hatchet", {
     Info = "The Stone Hatchet - Basic for collecting Sheep cloths and tree gathering",
     Category = "Tools",
     model = "materials/items/tools/stone_hatchet.png",
-    Weapon = "tfa_rustalpha_stonehatchet",
+    Weapon = "tfa_rustalpha_stone_hatchet",
     Count = 1,
     Craft = function()
         return {
@@ -44,12 +44,12 @@ ITEMS:RegisterItem("Stone Hatchet", {
     end,
 }, "Tools")
 
-ITEMS:RegisterItem("Stone Pickaxe", {
+/*ITEMS:RegisterItem("Stone Pickaxe", {
     Name = "Stone Pickaxe",
     Info = "The Stone Pickaxe - Basic for collecting Ores",
     Category = "Tools",
     model = "materials/items/tools/stone_pickaxe.png",
-    Weapon = "tfa_rustalpha_stonepickaxe",
+    Weapon = "tfa_rustalpha_stone_hatchet",
     Count = 1,
     Craft = function()
         return {
@@ -68,13 +68,15 @@ ITEMS:RegisterItem("Stone Pickaxe", {
         }
     end,
 }, "Tools")
+TODO
+*/
 
 ITEMS:RegisterItem("Building Plan", {
     Name = "Building Plan",
     Info = "The Building Plan, For building",
     Category = "Tools",
     model = "materials/items/tools/building_plan.png",
-    Weapon = "rust_buildingplan",
+    Weapon = "rust_builder",
     Count = 1,
     Craft = function()
         return {

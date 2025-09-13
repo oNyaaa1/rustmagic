@@ -3,6 +3,7 @@ util.AddNetworkString("gRust_COD")
 util.AddNetworkString("SendSlots")
 util.AddNetworkString("DragNDropRust")
 util.AddNetworkString("gRustWriteSlot")
+util.AddNetworkString("gRustSelectWep")
 for k, v in pairs(file.Find("materials/tree/*", "GAME")) do
     resource.AddFile("materials/tree/" .. v)
     print("Adding materials/tree/" .. v)
@@ -73,6 +74,7 @@ function PickleAdillyEdit(ply, wep, amount)
             Amount = amount,
         }
 
+        ply:Give(itemz.Weapon)
         net.Start("DragNDropRust")
         net.WriteTable(ply.tbl)
         net.Send(ply)
@@ -108,6 +110,7 @@ function PickleAdillyEdit(ply, wep, amount)
             SlotFree = false,
         }
 
+        ply:Give(itemz.Weapon)
         net.Start("DragNDropRust")
         net.WriteTable(ply.tbl)
         net.Send(ply)
@@ -124,13 +127,12 @@ function PickleAdillyEdit(ply, wep, amount)
             SlotFree = false,
         }
 
+        ply:Give(itemz.Weapon)
         net.Start("DragNDropRust")
         net.WriteTable(ply.tbl)
         net.Send(ply)
         return
     end
-
-    if itemz.Weapon ~= "" then ply:Give(itemz.Weapon) end
 end
 
 function PickleAdilly(ply, wep)
@@ -158,11 +160,19 @@ function meta:GiveItem(item, amount)
     PickleAdillyEdit(self, item, amount)
 end
 
+net.Receive("gRustSelectWep", function(len, ply)
+    local proxy_wep = net.ReadString()
+    local itemz = ITEMS:GetItem(proxy_wep)
+    if itemz == nil then return end
+    ply:SelectWeapon(itemz.Weapon)
+end)
+
 net.Receive("gRustWriteSlot", function(len, ply)
     local id = net.ReadFloat()
     local NewSlot = net.ReadFloat()
     local proxy_wep = net.ReadString()
     local proxy_id = net.ReadFloat()
+    print(proxy_wep, proxy_id)
     local itemz = ITEMS:GetItem(proxy_wep)
     if id ~= nil and id ~= -1 then
         ply.tbl[id] = {

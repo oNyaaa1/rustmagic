@@ -114,22 +114,25 @@ function GM:ScoreboardHide()
     if IsValid(frm) then frm:Remove() end
     gui.EnableScreenClicker(false)
 end
---[[hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
+
+hook.Add("PlayerBindPress", "Bindpressgturst", function(ply, bind, pressed)
     if not pressed then return end
     local sub = string.gsub(bind, "slot", "")
     local num = tonumber(sub)
     if not num or num <= 0 or num > 6 then return end
     local found = false
-    if IsValid(btn[num]) then
-        net.Start("gRustWriteSlot")
-        net.WriteString(btn[num].Class or "")
-        net.SendToServer()
-        found = true
+    for k, v in pairs(GLOBAL.tbl) do
+        if num == v.Slotz then
+            net.Start("gRustSelectWep")
+            net.WriteString(v.Weapon)
+            net.SendToServer()
+            found = true
+        end
     end
 
     if not found then
-        net.Start("gRustWriteSlot")
+        net.Start("gRustSelectWep")
         net.WriteString("rust_hands")
         net.SendToServer()
     end
-end)]]
+end)
