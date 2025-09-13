@@ -151,7 +151,7 @@ end
 
 local meta = FindMetaTable("Player")
 function meta:GiveItem(item, amount)
-    PickleAdilly(self, item)
+    PickleAdillyEdit(self,item,amount)
 end
 
 net.Receive("gRustWriteSlot", function(len, ply)

@@ -24,7 +24,7 @@ ITEMS:RegisterItem("Stone Hatchet", {
     Info = "The Stone Hatchet - Basic for collecting Sheep cloths and tree gathering",
     Category = "Tools",
     model = "materials/items/tools/stone_hatchet.png",
-    Weapon = "rust_stonehatchet",
+    Weapon = "tfa_rustalpha_stonehatchet",
     Count = 1,
     Craft = function()
         return {
@@ -49,7 +49,7 @@ ITEMS:RegisterItem("Stone Pickaxe", {
     Info = "The Stone Pickaxe - Basic for collecting Ores",
     Category = "Tools",
     model = "materials/items/tools/stone_pickaxe.png",
-    Weapon = "rust_stonepickaxe",
+    Weapon = "tfa_rustalpha_stonepickaxe",
     Count = 1,
     Craft = function()
         return {
@@ -116,7 +116,7 @@ ITEMS:RegisterItem("Hatchet", {
     Info = "Hatchet, Gathering trees!",
     Category = "Tools",
     model = "materials/items/tools/hatchet.png",
-    Weapon = "rust_hatchet",
+    Weapon = "tfa_rustalpha_hatchet",
     Count = 1,
     Craft = function()
         return {

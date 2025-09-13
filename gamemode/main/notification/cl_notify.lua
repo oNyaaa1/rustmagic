@@ -57,7 +57,7 @@ local function CreateNotify(text, notificationType, icon, side)
             end
         end
 
-        local targetY = ScrH() - (h * 0.21) - ((stackIndex - 1) * (h * 0.04))
+        local targetY = ScrH() - (h * 0.18) - ((stackIndex - 1) * (h * 0.04))
 
         self.CurrentY = Lerp(FrameTime() * 10, self.CurrentY, targetY)
         self:SetPos(ScrW() - (w * 0.16), self.CurrentY)
