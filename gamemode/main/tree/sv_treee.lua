@@ -126,10 +126,10 @@ local WOOD_WEAPONS = {
     ["tfa_rustalpha_rocktool"] = {
         mult = 1
     },
-    ["rust_stonehatchet"] = {
+    ["tfa_rustalpha_stone_hatchet"] = {
         mult = 1.3
     },
-    ["rust_hatchet"] = {
+    ["tfa_rustalpha_hatchet"] = {
         mult = 1.8
     }
 }
@@ -163,6 +163,7 @@ hook.Add("EntityTakeDamage", "TakeWoodDmg", function(ent, dmginfo)
         local class = wep:GetClass()
         if not class then return end
         local tool = WOOD_WEAPONS[class]
+        if tool == nil then return end
         local maxHP = TREE_MODELS[ent:GetModel()]
         if not ent.treeHealth then ent.treeHealth, ent.treeHits = maxHP, 0 end
         if ent.treeHealth == nil then return end
